@@ -23,7 +23,7 @@ const CellWrapper = styled.div`
     width: 100%;
     border-left: none;
     /* overflow: hidden; */
-    > span:first-child {
+    > a:first-child {
       max-width: 45vw;
       overflow: hidden;
       text-overflow: ellipsis;
