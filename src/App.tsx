@@ -3,12 +3,11 @@ import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import Footer from "./Footer";
 import PriceCell from "./Cell";
-import useGetMapStorage from "./hooks/useGetMapStorage";
+// import useGetMapStorage from "./hooks/useGetMapStorage";
 import WSStatus from "./Status";
 import AddToken from "./Add";
 import useGetListings from "./hooks/useGetListings";
 
-const LOCAL_KEY = "LOCAL_KEY";
 const Separater = "_";
 
 const Wrapper = styled.div`
@@ -23,6 +22,8 @@ export default function App() {
       id: number;
       price?: number;
       p24h?: number;
+      slug?: string;
+      name?: string;
     }[]
   >(() => {
     const ids = new URL(window.location.href).searchParams.get("ids");
@@ -37,8 +38,6 @@ export default function App() {
   const ids = prices.map(({ id }) => id);
 
   const resubscribing = useRef(false);
-
-  const mapData = useGetMapStorage(LOCAL_KEY);
 
   useGetListings(ids, setPrices);
 
@@ -148,29 +147,26 @@ export default function App() {
       url.searchParams.set("ids", ids.join(Separater));
       window.history.replaceState("", document.title, url);
     }
-  }, [ids.length]);
+  }, [ids.join()]);
 
   return (
     <div className="App">
       {/* <Gas /> */}
       <Wrapper>
-        {prices.map(({ id, p24h, price }: any) => (
+        {prices.map((info: any, idx) => (
           <PriceCell
-            key={id}
-            id={id}
-            p24h={p24h}
-            price={price}
-            name={mapData[id]?.name}
+            key={info.id}
+            info={info}
             onRemove={(id: number) => handleAddOrRemove(id)}
+            prices={prices}
+            setPrices={setPrices}
+            idx={idx}
           />
         ))}
       </Wrapper>
       <WSStatus wsInstance={WSInstance} reconnect={reconnect} />
       <Footer />
-      <AddToken
-        map={mapData}
-        onAdd={(id: number) => handleAddOrRemove(id, true)}
-      />
+      <AddToken onAdd={(id: number) => handleAddOrRemove(id, true)} />
     </div>
   );
 }

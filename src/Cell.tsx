@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
 const CellWrapper = styled.div`
@@ -10,23 +10,27 @@ const CellWrapper = styled.div`
   width: calc(50% - 17px);
   /* display: inline-block; */
   /* border-left: 1px solid #fff; */
-  border-radius: 4px;
+  /* border-radius: 4px; */
   cursor: pointer;
   box-sizing: border-box;
   user-select: none;
-  &:hover {
+  border-bottom: 1px solid var(--border-color);
+  /* &:hover {
     transform: translateY(-2px);
-  }
+  } */
   @media screen and (max-width: 450px) {
     white-space: nowrap;
     width: 100%;
     border-left: none;
     /* overflow: hidden; */
-    >span:first-child {
-        max-width: 45vw;
-        overflow: hidden;
-        text-overflow: ellipsis;
+    > span:first-child {
+      max-width: 45vw;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
+  }
+  > a {
+    color: inherit;
   }
   img {
     width: 1.5em;
@@ -54,12 +58,23 @@ const CellWrapper = styled.div`
   }
 `;
 
-const PriceCell = ({ id, price, p24h, name, onRemove }: any) => {
+const Operations = styled.div`
+  padding: 8px;
+  border-bottom: 1px solid var(--border-color);
+  justify-content: space-between;
+  display: flex;
+`;
+
+const PriceCell = ({ info, onRemove, prices, setPrices, idx }: any) => {
+  const { id, p24h, price, name, slug } = info;
   const lastPrice = useRef(price);
   const isUp = useRef(true);
+
+  const [expand, setExpand] = useState(false);
+
   useEffect(() => {
     if (price !== lastPrice.current) {
-    //   console.log("update!", price);
+      //   console.log("update!", price);
       isUp.current = lastPrice.current < price || price === undefined;
       lastPrice.current = price;
     }
@@ -69,41 +84,75 @@ const PriceCell = ({ id, price, p24h, name, onRemove }: any) => {
   //   const isUp = lastPrice.current < price || price === undefined;
   //   const isEqual = lastPrice.current === price;
   //   console.log(isEqual);
+  //   console.log(expand);
+
+  const onMove = (isUp?: boolean) => {
+    // let temp;
+    const idxOffset = isUp ? -1 : 1;
+    // if (isUp) {
+    const temp = prices[idx + idxOffset];
+    prices[idx + idxOffset] = prices[idx];
+    prices[idx] = temp;
+    setPrices([...prices]);
+    // } else {
+    //     temp = prices[idx - 1];
+    //     prices[idx - 1] = prices[idx];
+    //     prices[idx] = temp;
+    //     setPrices([...prices]);
+    // }
+  };
+
   return (
-    <CellWrapper
-      onClick={() => onRemove(id)}
-      key={id}
-      style={
-        {
-          // color: price ? "#efefef" : "#000",
-        }
-      }
-    >
-      <span>
-        <img
-          src={`https://s2.coinmarketcap.com/static/img/coins/64x64/${id}.png`}
-          alt={id}
-        />
-        {name || "unknown"}
-      </span>
-      <span>
-        <span className={`price ${isUp.current ? "up" : "down"}`}>
-          {price ? price?.toFixed(4) : "-"}
-          {isUp.current ? "↑" : "↓"}
-        </span>
+    <>
+      <CellWrapper key={id}>
+        <a
+          href={`https://coinmarketcap.com/currencies/${slug}/`}
+          target="_blank"
+          rel="noreferrer"
+        >
+          <img
+            src={`https://s2.coinmarketcap.com/static/img/coins/64x64/${id}.png`}
+            alt={id}
+          />
+          {name || "unknown"}
+        </a>
         <span
-          className="percentage"
-          style={{
-            backgroundColor:
-              p24h > 0
-                ? `rgba(0, 255, 0, ${Math.sqrt(Math.abs(p24h / 10))})`
-                : `rgba(255, 0, 0, ${Math.sqrt(Math.abs(p24h / 10))})`,
+          onClick={() => {
+            // console.log("click!", expand);
+            setExpand(!expand);
           }}
         >
-          {p24h ? `${p24h.toFixed(2)}%` : ""}
+          <span className={`price ${isUp.current ? "up" : "down"}`}>
+            {price ? price?.toFixed(4) : "-"}
+            {isUp.current ? "↑" : "↓"}
+          </span>
+          <span
+            className="percentage"
+            style={{
+              backgroundColor:
+                p24h > 0
+                  ? `rgba(0, 255, 0, ${Math.sqrt(Math.abs(p24h / 10))})`
+                  : `rgba(255, 0, 0, ${Math.sqrt(Math.abs(p24h / 10))})`,
+            }}
+          >
+            {p24h ? `${p24h.toFixed(2)}%` : ""}
+          </span>
         </span>
-      </span>
-    </CellWrapper>
+      </CellWrapper>
+      {expand && (
+        <Operations>
+          <button onClick={() => onMove(true)} disabled={idx === 0}>
+            Move Up↑
+          </button>
+          <button onClick={() => onMove()} disabled={idx === prices.length - 1}>
+            Move Down↓
+          </button>
+          <button onClick={() => onRemove(id)} className="danger">
+            Delete
+          </button>
+        </Operations>
+      )}
+    </>
   );
 };
 

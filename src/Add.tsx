@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
+import useGetMapStorage from "./hooks/useGetMapStorage";
 
 const TokenList = styled.div`
   cursor: pointer;
@@ -11,9 +12,12 @@ const TokenList = styled.div`
   }
 `;
 
-const AddToken = ({ map, onAdd }: any) => {
+const LOCAL_KEY = "LOCAL_KEY";
+
+const AddToken = ({ onAdd }: any) => {
   const [search, setSearch] = useState("");
-  const mapArr = Object.values(map);
+  const mapData = useGetMapStorage(LOCAL_KEY);
+  const mapArr = Object.values(mapData);
   const ref = useRef<HTMLInputElement>(null);
 
   useEffect(() => {

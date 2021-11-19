@@ -1,22 +1,22 @@
 {
   "files": {
-    "main.css": "/crypto_watch/build/static/css/main.6abeacf9.chunk.css",
-    "main.js": "/crypto_watch/build/static/js/main.c375e581.chunk.js",
-    "main.js.map": "/crypto_watch/build/static/js/main.c375e581.chunk.js.map",
+    "main.css": "/crypto_watch/build/static/css/main.86df2a34.chunk.css",
+    "main.js": "/crypto_watch/build/static/js/main.4869a299.chunk.js",
+    "main.js.map": "/crypto_watch/build/static/js/main.4869a299.chunk.js.map",
     "runtime-main.js": "/crypto_watch/build/static/js/runtime-main.f85624e7.js",
     "runtime-main.js.map": "/crypto_watch/build/static/js/runtime-main.f85624e7.js.map",
-    "static/js/2.50ccb650.chunk.js": "/crypto_watch/build/static/js/2.50ccb650.chunk.js",
-    "static/js/2.50ccb650.chunk.js.map": "/crypto_watch/build/static/js/2.50ccb650.chunk.js.map",
+    "static/js/2.09763f1a.chunk.js": "/crypto_watch/build/static/js/2.09763f1a.chunk.js",
+    "static/js/2.09763f1a.chunk.js.map": "/crypto_watch/build/static/js/2.09763f1a.chunk.js.map",
     "static/js/3.153fd5ff.chunk.js": "/crypto_watch/build/static/js/3.153fd5ff.chunk.js",
     "static/js/3.153fd5ff.chunk.js.map": "/crypto_watch/build/static/js/3.153fd5ff.chunk.js.map",
     "index.html": "/crypto_watch/build/index.html",
-    "static/css/main.6abeacf9.chunk.css.map": "/crypto_watch/build/static/css/main.6abeacf9.chunk.css.map",
-    "static/js/2.50ccb650.chunk.js.LICENSE.txt": "/crypto_watch/build/static/js/2.50ccb650.chunk.js.LICENSE.txt"
+    "static/css/main.86df2a34.chunk.css.map": "/crypto_watch/build/static/css/main.86df2a34.chunk.css.map",
+    "static/js/2.09763f1a.chunk.js.LICENSE.txt": "/crypto_watch/build/static/js/2.09763f1a.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.f85624e7.js",
-    "static/js/2.50ccb650.chunk.js",
-    "static/css/main.6abeacf9.chunk.css",
-    "static/js/main.c375e581.chunk.js"
+    "static/js/2.09763f1a.chunk.js",
+    "static/css/main.86df2a34.chunk.css",
+    "static/js/main.4869a299.chunk.js"
   ]
 }

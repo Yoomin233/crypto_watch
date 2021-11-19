@@ -32,6 +32,8 @@ const useGetListings = (
                 ...d,
                 price: find.quotes?.[0]?.price || 0,
                 p24h: find.quotes?.[0]?.percentChange24h || 0,
+                name: find.name,
+                slug: find.slug,
               };
             } else {
               return d;
