@@ -5,7 +5,7 @@ const CellWrapper = styled.div`
   display: inline-flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px;
+  padding: 6px 8px;
   /* margin-top: 8px; */
   width: calc(50% - 17px);
   /* display: inline-block; */
@@ -31,9 +31,11 @@ const CellWrapper = styled.div`
   }
   > a {
     color: inherit;
+    font-size: 0.9em;
+    text-decoration: none;
   }
   img {
-    width: 2em;
+    width: 2.1em;
     margin-right: 0.5em;
     vertical-align: middle;
   }
@@ -48,7 +50,7 @@ const CellWrapper = styled.div`
     }
   }
   span.percentage {
-    padding: 8px 4px;
+    padding: 4px;
     border-radius: 4px;
     color: #fff;
     margin-left: 12px;
@@ -63,6 +65,9 @@ const Operations = styled.div`
   border-bottom: 1px solid var(--border-color);
   justify-content: space-between;
   display: flex;
+  button {
+    font-size: 0.8em;
+  }
 `;
 
 const PriceCell = ({ info, onRemove, prices, setPrices, idx }: any) => {
