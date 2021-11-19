@@ -13,7 +13,7 @@ const Separater = "_";
 const Wrapper = styled.div`
   text-align: left;
   padding: 0px 8px;
-  padding-top: 8px;
+  /* padding-top: 8px; */
 `;
 
 export default function App() {
@@ -151,6 +151,7 @@ export default function App() {
   return (
     <div className="App">
       {/* <Gas /> */}
+      <AddToken onAdd={(id: number) => handleAddOrRemove(id, true)} />
       <Wrapper>
         {prices.map((info: any, idx) => (
           <PriceCell
@@ -165,7 +166,6 @@ export default function App() {
       </Wrapper>
       {/* <WSStatus /> */}
       <Footer wsInstance={WSInstance} reconnect={reconnect} />
-      <AddToken onAdd={(id: number) => handleAddOrRemove(id, true)} />
     </div>
   );
 }

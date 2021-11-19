@@ -34,7 +34,7 @@ const AddToken = ({ onAdd }: any) => {
   return (
     <div
       style={{
-        marginTop: 24,
+        margin: "12px 0px",
       }}
     >
       <input
