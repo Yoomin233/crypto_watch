@@ -20,9 +20,9 @@ const AddToken = ({ onAdd }: any) => {
   const mapArr = Object.values(mapData);
   const ref = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    ref.current?.focus();
-  }, []);
+  // useEffect(() => {
+  //   ref.current?.focus();
+  // }, []);
 
   const searchRes = search
     ? mapArr.filter(

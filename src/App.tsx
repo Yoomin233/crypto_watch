@@ -13,6 +13,7 @@ const Separater = "_";
 const Wrapper = styled.div`
   text-align: left;
   padding: 0px 8px;
+  padding-top: 8px;
 `;
 
 export default function App() {
@@ -49,11 +50,10 @@ export default function App() {
       WS = new WebSocket("wss://stream.coinmarketcap.com/price/latest");
       WSInstance.current = WS;
     } catch (e) {
-      console.log(e);
       setTimeout(() => {
         initWS();
         subscribeWS(ids);
-      }, 5000);
+      }, 3000);
     }
   };
 
@@ -106,10 +106,9 @@ export default function App() {
         if (!resubscribing.current) {
           console.log("reconnecting...");
           setTimeout(() => {
-            console.log(ids);
             initWS();
             subscribeWS(ids);
-          }, 5000);
+          }, 3000);
         }
       });
     };
@@ -164,8 +163,8 @@ export default function App() {
           />
         ))}
       </Wrapper>
-      <WSStatus wsInstance={WSInstance} reconnect={reconnect} />
-      <Footer />
+      {/* <WSStatus /> */}
+      <Footer wsInstance={WSInstance} reconnect={reconnect} />
       <AddToken onAdd={(id: number) => handleAddOrRemove(id, true)} />
     </div>
   );
