@@ -21,6 +21,12 @@ const CellWrapper = styled.div`
     white-space: nowrap;
     width: 100%;
     border-left: none;
+    /* overflow: hidden; */
+    >span:first-child {
+        max-width: 45vw;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
   }
   img {
     width: 1.5em;
