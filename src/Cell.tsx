@@ -33,7 +33,7 @@ const CellWrapper = styled.div`
     color: inherit;
   }
   img {
-    width: 1.5em;
+    width: 2em;
     margin-right: 0.5em;
     vertical-align: middle;
   }
