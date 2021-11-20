@@ -138,15 +138,24 @@ export default function App() {
     });
   };
 
+  /**
+   * rewrite URL when id length / order changes
+   */
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    url.searchParams.set("ids", ids.join(Separater));
+    window.history.replaceState("", document.title, url);
+  }, [ids.join()]);
+
+  /**
+   * resubscribe when id length changes
+   */
   useEffect(() => {
     if (ids.length) {
       resubscribing.current = true;
       reconnect();
-      const url = new URL(window.location.href);
-      url.searchParams.set("ids", ids.join(Separater));
-      window.history.replaceState("", document.title, url);
     }
-  }, [ids.join()]);
+  }, [ids.length]);
 
   return (
     <div className="App">
