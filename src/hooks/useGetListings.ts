@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const useGetListings = (
   ids: number[],
@@ -12,8 +12,13 @@ const useGetListings = (
       }[]
     >
   >
-) => {
-  useEffect(() => {
+  // refetch: boolean
+): [() => Promise<any>, Date] => {
+  // console.log(refetch);
+
+  const [lastRefetch, setLastRefetch] = useState(new Date());
+
+  const refetch = () =>
     axios
       .get(
         `https://api.coinmarketcap.com/data-api/v3/cryptocurrency/listing?ids=${ids.join(
@@ -22,6 +27,7 @@ const useGetListings = (
       )
       .then(({ data }) => {
         const priceData = data.data.cryptoCurrencyList;
+        setLastRefetch(new Date());
         setter((data) => {
           return data.map((d) => {
             const find = priceData.find((p: any) => p.id === d.id);
@@ -39,16 +45,14 @@ const useGetListings = (
               return d;
             }
           });
-          //   return data;
-          //   return data.reduce((prev, next) => {
-          //     console.
-          //   }, [])
         });
-        // data.data.cryptoCurrencyList.map((token: any) => {
-        //   console.log(token);
-        // });
       });
+  useEffect(() => {
+    refetch();
+    // if (!refetch) return;
+    // console.log("call!!");
   }, [ids.length, setter]);
+  return [refetch, lastRefetch];
 };
 
 export default useGetListings;

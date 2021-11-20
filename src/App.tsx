@@ -7,8 +7,11 @@ import PriceCell from "./Cell";
 import WSStatus from "./Status";
 import AddToken from "./Add";
 import useGetListings from "./hooks/useGetListings";
+import useGetMapStorage from "./hooks/useGetMapStorage";
 
 const Separater = "_";
+
+const LOCAL_KEY = "LOCAL_KEY";
 
 const Wrapper = styled.div`
   text-align: left;
@@ -40,9 +43,11 @@ export default function App() {
 
   const resubscribing = useRef(false);
 
-  useGetListings(ids, setPrices);
+  const mapData = useGetMapStorage(LOCAL_KEY);
 
   const WSInstance = useRef<WebSocket>();
+
+  const [refetchAPI, lastRefetch] = useGetListings(ids, setPrices);
 
   const initWS = () => {
     let WS;
@@ -53,7 +58,7 @@ export default function App() {
       setTimeout(() => {
         initWS();
         subscribeWS(ids);
-      }, 3000);
+      }, 1000);
     }
   };
 
@@ -105,10 +110,11 @@ export default function App() {
         setWSStatus(WS.readyState);
         if (!resubscribing.current) {
           console.log("reconnecting...");
+          refetchAPI();
           setTimeout(() => {
             initWS();
             subscribeWS(ids);
-          }, 3000);
+          }, 1000);
         }
       });
     };
@@ -160,7 +166,10 @@ export default function App() {
   return (
     <div className="App">
       {/* <Gas /> */}
-      <AddToken onAdd={(id: number) => handleAddOrRemove(id, true)} />
+      <AddToken
+        onAdd={(id: number) => handleAddOrRemove(id, true)}
+        mapData={mapData}
+      />
       <Wrapper>
         {prices.map((info: any, idx) => (
           <PriceCell
@@ -174,7 +183,25 @@ export default function App() {
         ))}
       </Wrapper>
       {/* <WSStatus /> */}
-      <Footer wsInstance={WSInstance} reconnect={reconnect} />
+      {ids.length ? (
+        <Footer
+          wsInstance={WSInstance}
+          // reconnect={reconnect}
+          lastRefetch={lastRefetch}
+        />
+      ) : null}
+      
+      {/* <div>
+        <button onClick={() => closeWS()}>Disconnect</button>
+        <button
+          onClick={() => {
+            initWS();
+            subscribeWS(ids);
+          }}
+        >
+          Connect
+        </button>
+      </div> */}
     </div>
   );
 }

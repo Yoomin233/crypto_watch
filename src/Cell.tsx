@@ -109,11 +109,18 @@ const PriceCell = ({ info, onRemove, prices, setPrices, idx }: any) => {
 
   return (
     <>
-      <CellWrapper key={id}>
+      <CellWrapper
+        key={id}
+        onClick={() => {
+          // console.log("click!", expand);
+          setExpand(!expand);
+        }}
+      >
         <a
           href={`https://coinmarketcap.com/currencies/${slug}/`}
           target="_blank"
           rel="noreferrer"
+          onClick={(e) => e.stopPropagation()}
         >
           <img
             src={`https://s2.coinmarketcap.com/static/img/coins/64x64/${id}.png`}
@@ -121,12 +128,7 @@ const PriceCell = ({ info, onRemove, prices, setPrices, idx }: any) => {
           />
           {name || "unknown"}
         </a>
-        <span
-          onClick={() => {
-            // console.log("click!", expand);
-            setExpand(!expand);
-          }}
-        >
+        <span>
           <span className={`price ${isUp.current ? "up" : "down"}`}>
             {price ? price?.toFixed(4) : "-"}
             {isUp.current ? "↑" : "↓"}
