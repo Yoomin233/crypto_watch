@@ -113,6 +113,7 @@ export default function App() {
             return prices.map((p) => {
               if (p.id === info.id) {
                 return {
+                  ...info,
                   ...p,
                   price: info.p,
                   p24h: info.p24h,
@@ -210,6 +211,8 @@ export default function App() {
     }
   }, [ids.length]);
 
+  // console.log(prices)
+
   return (
     <div className="App">
       {/* <Gas /> */}
@@ -225,7 +228,7 @@ export default function App() {
       <Wrapper>
         {prices.map((info: any, idx) => (
           <PriceCell
-            name={mapData[info.id]?.name}
+            name={mapData[info.id]?.symbol}
             key={info.id}
             info={info}
             onRemove={(id: number) => handleAddOrRemove(id)}

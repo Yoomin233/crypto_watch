@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 import ImgLoading from "./components/ImgLoading";
+import { determineFraction } from "./utils/number";
 
 const Wrapper = styled.div`
   display: inline-block;
@@ -50,6 +51,7 @@ const CellWrapper = styled.div`
   span.price {
     font-weight: bold;
     font-size: 1.2em;
+    transition: all .1s linear;
     &.up {
       color: var(--up-color);
     }
@@ -167,18 +169,30 @@ const PriceCell = ({
   setExpandStatus,
 }: any) => {
   // console.log(info);
-  const { id, p24h, price, name: infoName, slug } = info;
+  const { id, p24h, price, slug, symbol } = info;
   const lastPrice = useRef(price);
-  const isUp = useRef(true);
+  // const isUp = useRef(true);
+  const [isUp, setIsUp] = useState<1 | 0 | -1>(0);
 
   // const [expand, setExpand] = useState(false);
 
   useEffect(() => {
-    if (price !== lastPrice.current) {
+    // console.log('updatw!', price, lastPrice.current)
+    if (
+      price !== lastPrice.current &&
+      price !== undefined &&
+      lastPrice.current !== undefined
+    ) {
       //   console.log("update!", price);
-      isUp.current = lastPrice.current < price || price === undefined;
-      lastPrice.current = price;
+      if (lastPrice.current < price) {
+        setIsUp(1);
+      } else {
+        setIsUp(-1);
+      }
+      setTimeout(() => setIsUp(0), 1000);
+      // isUp.current =
     }
+    lastPrice.current = price;
     // console.log("price change!", lastPrice.current, price);
   }, [price]);
 
@@ -204,6 +218,11 @@ const PriceCell = ({
 
   const isExpanded = !!expandStatus[idx];
 
+  const priceDisplay = useMemo(() => {
+    // console.log(price);
+    return price ? price.toFixed(determineFraction(price)) : "-";
+  }, [price]);
+
   return (
     <Wrapper>
       <CellWrapper
@@ -224,12 +243,16 @@ const PriceCell = ({
             src={`https://s2.coinmarketcap.com/static/img/coins/64x64/${id}.png`}
             alt={id}
           />
-          {name || infoName || "unknown"}
+          {name || symbol || "unknown"}
         </a>
         <span>
-          <span className={`price ${isUp.current ? "up" : "down"}`}>
-            {price ? price?.toFixed(4) : "-"}
-            {isUp.current ? "↑" : "↓"}
+          <span
+            className={`price ${
+              isUp === 1 ? "up" : isUp === -1 ? "down" : undefined
+            }`}
+          >
+            {priceDisplay}
+            {/* {isUp === 1 ? "↑" : isUp === -1 ? "↓" : null} */}
           </span>
           <span
             className="percentage"
