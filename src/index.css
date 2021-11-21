@@ -75,3 +75,9 @@ button.danger {
   background-color: var(--down-color);
   font-weight: bold;
 }
+
+/* @keyframes spin {
+  to {
+    transform: rotate(1turn);
+  }
+} */

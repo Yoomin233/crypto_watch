@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
+import ImgLoading from "./components/ImgLoading";
 
 const Wrapper = styled.div`
   display: inline-block;
@@ -147,10 +148,10 @@ const ChartsGroup = ({ id = 1 }) => {
 
 const Charts = ({ id = 1, period = 7 }) => {
   return (
-    <img
+    <ImgLoading
       src={`https://s3.coinmarketcap.com/generated/sparklines/web/${period}d/2781/${id}.svg`}
       alt={`${id} sparkline`}
-    ></img>
+    />
   );
 };
 
@@ -256,7 +257,7 @@ const PriceCell = ({
               ⬇
             </button>
             <button onClick={() => onRemove(id)} className="danger">
-              X
+              ╳
             </button>
           </div>
         </MoreSection>
