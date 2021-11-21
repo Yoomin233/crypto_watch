@@ -164,12 +164,12 @@ export default function App() {
     });
   };
 
-  const allExpanded = expandStatus.every((v) => v);
+  // const allExpanded = expandStatus.every((v) => v);
 
-  const handleExpand = () => {
-    if (expandStatus.some((v) => !v)) {
+  const handleExpand = (expand?: boolean) => {
+    if (expand) {
       setExpandStatus((e) => e.map((_) => 1));
-    } else if (allExpanded) {
+    } else {
       setExpandStatus((e) => e.map((_) => 0));
     }
   };
@@ -218,9 +218,9 @@ export default function App() {
           onAdd={(id: number) => handleAddOrRemove(id, true)}
           mapData={mapData}
         />
-        <button onClick={handleExpand}>
-          {allExpanded ? "Collapse" : "Expand"} All
-        </button>
+        <button onClick={() => handleExpand(false)}>{"Collapse"}</button>
+        &nbsp;
+        <button onClick={() => handleExpand(true)}>{"Expand"}</button>
       </HeadWrapper>
       <Wrapper>
         {prices.map((info: any, idx) => (

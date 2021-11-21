@@ -89,14 +89,15 @@ const ChartsWrapper = styled.div`
     display: grid;
     margin-right: 8px;
     > span {
-      border: 2px solid transparent;
-      border-right: none;
+      border: 1px solid transparent;
       border-top-left-radius: 6px;
       border-bottom-left-radius: 6px;
       padding: 2px 8px;
+      border-right-color: var(--border-color);
       &.selected {
         /* color: yellow; */
         border-color: var(--border-color);
+        border-right-color: transparent;
       }
     }
   }
