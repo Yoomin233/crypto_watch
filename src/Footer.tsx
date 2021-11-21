@@ -29,7 +29,7 @@ const Wrapper = styled.p`
   }
   &.Connected {
     background-color: rgba(0, 255, 0, 0.33);
-    transform: translateY(calc(100% - 1px));
+    transform: translateY(calc(100% - 4px));
   }
   &.Disconnected {
     background-color: var(--down-color);
@@ -43,15 +43,15 @@ const Wrapper = styled.p`
 `;
 
 const Footer = ({
-  wsInstance,
+  wsStatus,
   lastRefetch,
 }: // reconnect,
 {
-  wsInstance: React.MutableRefObject<WebSocket | undefined>;
+  wsStatus: number;
   lastRefetch: Date;
   // reconnect: any;
 }) => {
-  const status = wsInstance.current?.readyState;
+  const status = wsStatus;
   //   console.log(status);
   const statusString =
     status === 0 || status === undefined
@@ -64,7 +64,7 @@ const Footer = ({
   return (
     <Wrapper className={statusString}>
       <span>
-        Data Provider:{" "}
+        Data Source:{" "}
         <a href="https://coinmarketcap.com/" target="_blank" rel="noreferrer">
           CoinMarketCap
         </a>

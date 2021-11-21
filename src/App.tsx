@@ -4,14 +4,16 @@ import styled from "styled-components";
 import Footer from "./Footer";
 import PriceCell from "./Cell";
 // import useGetMapStorage from "./hooks/useGetMapStorage";
-import WSStatus from "./Status";
+// import WSStatus from "./Status";
 import AddToken from "./Add";
 import useGetListings from "./hooks/useGetListings";
 import useGetMapStorage from "./hooks/useGetMapStorage";
+import useSubsequentUpdate from "./hooks/useSubsequentUpdate";
 
 const Separater = "_";
 
 const LOCAL_KEY = "LOCAL_KEY";
+const LOCAL_ID_KEY = "LOCAL_ID_KEY";
 
 const Wrapper = styled.div`
   text-align: left;
@@ -19,8 +21,18 @@ const Wrapper = styled.div`
   /* padding-top: 8px; */
 `;
 
+const HeadWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  > div:first-child {
+    flex-grow: 1;
+  }
+`;
+
 export default function App() {
   const [wsStatus, setWSStatus] = useState<number>(0);
+
   const [prices, setPrices] = useState<
     {
       id: number;
@@ -33,11 +45,19 @@ export default function App() {
     const ids = new URL(window.location.href).searchParams.get("ids");
     if (ids) {
       return ids.split(Separater).map((id) => ({
-        id: Number(id),
+        id: Number(id) || 1,
       }));
     }
     return [];
   });
+
+  // console.log(prices);
+
+  const [expandStatus, setExpandStatus] = useState(() =>
+    Array.from({ length: prices.length }).fill(0)
+  );
+
+  // console.log(expandStatus);
 
   const ids = prices.map(({ id }) => id);
 
@@ -144,14 +164,41 @@ export default function App() {
     });
   };
 
+  const allExpanded = expandStatus.every((v) => v);
+
+  const handleExpand = () => {
+    if (expandStatus.some((v) => !v)) {
+      setExpandStatus((e) => e.map((_) => 1));
+    } else if (allExpanded) {
+      setExpandStatus((e) => e.map((_) => 0));
+    }
+  };
+
+  const writeURL = (ids: string) => {
+    const url = new URL(window.location.href);
+    url.searchParams.set("ids", ids);
+    window.history.replaceState("", document.title, url);
+  };
+
+  useEffect(() => {
+    const idsStored = localStorage.getItem(LOCAL_ID_KEY);
+    const idsUrl = new URL(window.location.href).searchParams.get("ids");
+    // console.log(idsStored, idsUrl);
+    if (idsStored !== idsUrl && idsStored) {
+      writeURL(idsStored);
+    }
+  }, []);
+
   /**
    * rewrite URL when id length / order changes
    */
-  useEffect(() => {
-    const url = new URL(window.location.href);
-    url.searchParams.set("ids", ids.join(Separater));
-    window.history.replaceState("", document.title, url);
-  }, [ids.join()]);
+  useSubsequentUpdate(() => {
+    const idsString = ids.join(Separater);
+    writeURL(idsString);
+    localStorage.setItem(LOCAL_ID_KEY, idsString);
+    // if (ids.length) {
+    // }
+  }, ids.join());
 
   /**
    * resubscribe when id length changes
@@ -166,31 +213,40 @@ export default function App() {
   return (
     <div className="App">
       {/* <Gas /> */}
-      <AddToken
-        onAdd={(id: number) => handleAddOrRemove(id, true)}
-        mapData={mapData}
-      />
+      <HeadWrapper>
+        <AddToken
+          onAdd={(id: number) => handleAddOrRemove(id, true)}
+          mapData={mapData}
+        />
+        <button onClick={handleExpand}>
+          {allExpanded ? "Collapse" : "Expand"} All
+        </button>
+      </HeadWrapper>
       <Wrapper>
         {prices.map((info: any, idx) => (
           <PriceCell
+            name={mapData[info.id]?.name}
             key={info.id}
             info={info}
             onRemove={(id: number) => handleAddOrRemove(id)}
             prices={prices}
             setPrices={setPrices}
             idx={idx}
+            expandStatus={expandStatus}
+            setExpandStatus={setExpandStatus}
           />
         ))}
       </Wrapper>
       {/* <WSStatus /> */}
       {ids.length ? (
         <Footer
-          wsInstance={WSInstance}
+          wsStatus={wsStatus}
+          // wsInstance={WSInstance}
           // reconnect={reconnect}
           lastRefetch={lastRefetch}
         />
       ) : null}
-      
+
       {/* <div>
         <button onClick={() => closeWS()}>Disconnect</button>
         <button

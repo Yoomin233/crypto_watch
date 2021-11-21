@@ -26,6 +26,7 @@ const useGetListings = (
         )}&aux=ath`
       )
       .then(({ data }) => {
+        if (!data?.data) return;
         const priceData = data.data.cryptoCurrencyList;
         setLastRefetch(new Date());
         setter((data) => {

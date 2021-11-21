@@ -1,13 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
-const CellWrapper = styled.div`
-  display: inline-flex;
-  justify-content: space-between;
-  align-items: center;
+const Wrapper = styled.div`
+  display: inline-block;
   padding: 6px 8px;
   /* margin-top: 8px; */
-  width: calc(50% - 17px);
+  width: calc(50%);
+  vertical-align: top;
   /* display: inline-block; */
   /* border-left: 1px solid #fff; */
   /* border-radius: 4px; */
@@ -15,14 +14,21 @@ const CellWrapper = styled.div`
   box-sizing: border-box;
   user-select: none;
   border-bottom: 1px solid var(--border-color);
+  @media screen and (max-width: 450px) {
+    white-space: nowrap;
+    width: 100%;
+    /* overflow: hidden; */
+  }
+`;
+
+const CellWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   /* &:hover {
     transform: translateY(-2px);
   } */
   @media screen and (max-width: 450px) {
-    white-space: nowrap;
-    width: 100%;
-    border-left: none;
-    /* overflow: hidden; */
     > a:first-child {
       max-width: 45vw;
       overflow: hidden;
@@ -31,17 +37,18 @@ const CellWrapper = styled.div`
   }
   > a {
     color: inherit;
-    font-size: 0.9em;
+    font-size: 1.1em;
     text-decoration: none;
+    font-weight: bold;
   }
   img {
-    width: 2.1em;
+    width: 2rem;
     margin-right: 0.5em;
     vertical-align: middle;
   }
   span.price {
     font-weight: bold;
-    font-size: 1.1em;
+    font-size: 1.2em;
     &.up {
       color: var(--up-color);
     }
@@ -50,32 +57,119 @@ const CellWrapper = styled.div`
     }
   }
   span.percentage {
-    padding: 4px;
+    padding: 4px 8px;
     border-radius: 4px;
     color: #fff;
     margin-left: 12px;
     display: inline-block;
     text-align: center;
-    width: 4.5em;
+    /* width: 4.5em; */
   }
 `;
 
-const Operations = styled.div`
-  padding: 8px;
-  border-bottom: 1px solid var(--border-color);
+const MoreSection = styled.div`
+  padding-top: 8px;
+  /* border-bottom: 1px solid var(--border-color); */
   justify-content: space-between;
   display: flex;
   button {
     font-size: 0.8em;
   }
+  .buttons {
+    display: grid;
+    gap: 4px;
+  }
 `;
 
-const PriceCell = ({ info, onRemove, prices, setPrices, idx }: any) => {
-  const { id, p24h, price, name, slug } = info;
+const ChartsWrapper = styled.div`
+  display: flex;
+  flex-grow: 1;
+  .switch {
+    display: grid;
+    margin-right: 8px;
+    > span {
+      border: 2px solid transparent;
+      border-right: none;
+      border-top-left-radius: 6px;
+      border-bottom-left-radius: 6px;
+      padding: 2px 8px;
+      &.selected {
+        /* color: yellow; */
+        border-color: var(--border-color);
+      }
+    }
+  }
+  img {
+    width: 100%;
+  }
+`;
+
+const ChartsGroup = ({ id = 1 }) => {
+  const [period, setPeriod] = useState(7);
+  return (
+    <ChartsWrapper>
+      <div className="switch">
+        <span
+          className={period === 1 ? "selected" : undefined}
+          onClick={() => setPeriod(1)}
+        >
+          24h
+        </span>
+        <span
+          className={period === 7 ? "selected" : undefined}
+          onClick={() => setPeriod(7)}
+        >
+          7d
+        </span>
+        <span
+          className={period === 30 ? "selected" : undefined}
+          onClick={() => setPeriod(30)}
+        >
+          30d
+        </span>
+        <span
+          className={period === 60 ? "selected" : undefined}
+          onClick={() => setPeriod(60)}
+        >
+          60d
+        </span>
+        <span
+          className={period === 90 ? "selected" : undefined}
+          onClick={() => setPeriod(90)}
+        >
+          90d
+        </span>
+      </div>
+      <Charts id={id} period={period} />
+    </ChartsWrapper>
+  );
+};
+
+const Charts = ({ id = 1, period = 7 }) => {
+  return (
+    <img
+      src={`https://s3.coinmarketcap.com/generated/sparklines/web/${period}d/2781/${id}.svg`}
+      alt={`${id} sparkline`}
+    ></img>
+  );
+};
+
+const PriceCell = ({
+  name,
+  info,
+  onRemove,
+  prices,
+  setPrices,
+  idx,
+  expandStatus,
+  setExpandStatus,
+}: any) => {
+  // console.log(info);
+  const { id, p24h, price, name: infoName, slug } = info;
   const lastPrice = useRef(price);
   const isUp = useRef(true);
 
-  const [expand, setExpand] = useState(false);
+  // const [expand, setExpand] = useState(false);
 
   useEffect(() => {
     if (price !== lastPrice.current) {
@@ -85,11 +179,6 @@ const PriceCell = ({ info, onRemove, prices, setPrices, idx }: any) => {
     }
     // console.log("price change!", lastPrice.current, price);
   }, [price]);
-  //   console.log(price)
-  //   const isUp = lastPrice.current < price || price === undefined;
-  //   const isEqual = lastPrice.current === price;
-  //   console.log(isEqual);
-  //   console.log(expand);
 
   const onMove = (isUp?: boolean) => {
     // let temp;
@@ -98,22 +187,29 @@ const PriceCell = ({ info, onRemove, prices, setPrices, idx }: any) => {
     const temp = prices[idx + idxOffset];
     prices[idx + idxOffset] = prices[idx];
     prices[idx] = temp;
+
+    const expandTemp = expandStatus[idx + idxOffset];
+    expandStatus[idx + idxOffset] = expandStatus[idx];
+    expandStatus[idx] = expandTemp;
     setPrices([...prices]);
-    // } else {
-    //     temp = prices[idx - 1];
-    //     prices[idx - 1] = prices[idx];
-    //     prices[idx] = temp;
-    //     setPrices([...prices]);
-    // }
+    setExpandStatus([...expandStatus]);
   };
 
+  useEffect(() => {
+    expandStatus[idx] = 0;
+    setExpandStatus([...expandStatus]);
+  }, []);
+
+  const isExpanded = !!expandStatus[idx];
+
   return (
-    <>
+    <Wrapper>
       <CellWrapper
         key={id}
         onClick={() => {
           // console.log("click!", expand);
-          setExpand(!expand);
+          expandStatus[idx] = !expandStatus[idx];
+          setExpandStatus([...expandStatus]);
         }}
       >
         <a
@@ -126,7 +222,7 @@ const PriceCell = ({ info, onRemove, prices, setPrices, idx }: any) => {
             src={`https://s2.coinmarketcap.com/static/img/coins/64x64/${id}.png`}
             alt={id}
           />
-          {name || "unknown"}
+          {name || infoName || "unknown"}
         </a>
         <span>
           <span className={`price ${isUp.current ? "up" : "down"}`}>
@@ -146,20 +242,26 @@ const PriceCell = ({ info, onRemove, prices, setPrices, idx }: any) => {
           </span>
         </span>
       </CellWrapper>
-      {expand && (
-        <Operations>
-          <button onClick={() => onMove(true)} disabled={idx === 0}>
-            Move Up↑
-          </button>
-          <button onClick={() => onMove()} disabled={idx === prices.length - 1}>
-            Move Down↓
-          </button>
-          <button onClick={() => onRemove(id)} className="danger">
-            Delete
-          </button>
-        </Operations>
+      {isExpanded && (
+        <MoreSection>
+          <ChartsGroup id={id} />
+          <div className="buttons">
+            <button onClick={() => onMove(true)} disabled={idx === 0}>
+              ⬆
+            </button>
+            <button
+              onClick={() => onMove()}
+              disabled={idx === prices.length - 1}
+            >
+              ⬇
+            </button>
+            <button onClick={() => onRemove(id)} className="danger">
+              X
+            </button>
+          </div>
+        </MoreSection>
       )}
-    </>
+    </Wrapper>
   );
 };
 

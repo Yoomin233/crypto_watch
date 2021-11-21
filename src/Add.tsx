@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import styled from "styled-components";
 
 const TokenList = styled.div`
@@ -8,6 +8,19 @@ const TokenList = styled.div`
     width: 1.5em;
     margin-right: 0.5em;
     vertical-align: middle;
+  }
+`;
+
+const Wrapper = styled.div`
+  margin: 12px 0px;
+  > div {
+    position: absolute;
+    background: var(--background-color);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    width: 100%;
+    text-align: left;
+    padding-left: 8px;
   }
 `;
 
@@ -28,11 +41,7 @@ const AddToken = ({ onAdd, mapData }: any) => {
       )
     : [];
   return (
-    <div
-      style={{
-        margin: "12px 0px",
-      }}
-    >
+    <Wrapper>
       <input
         value={search}
         onChange={(e) => setSearch(e.target.value)}
@@ -40,27 +49,29 @@ const AddToken = ({ onAdd, mapData }: any) => {
         disabled={!mapArr.length}
         ref={ref}
       />
-      <div>
-        {searchRes.slice(0, 10).map((r: any) => (
-          <TokenList
-            key={r.id}
-            onClick={() => {
-              onAdd(r.id);
-              setSearch("");
-              setTimeout(() => {
-                ref.current?.focus();
-              }, 500);
-            }}
-          >
-            <img
-              src={`https://s2.coinmarketcap.com/static/img/coins/64x64/${r.id}.png`}
-              alt={r.id}
-            />
-            {r.name}
-          </TokenList>
-        ))}
-      </div>
-    </div>
+      {searchRes.length ? (
+        <div>
+          {searchRes.slice(0, 10).map((r: any) => (
+            <TokenList
+              key={r.id}
+              onClick={() => {
+                onAdd(r.id);
+                setSearch("");
+                setTimeout(() => {
+                  ref.current?.focus();
+                }, 500);
+              }}
+            >
+              <img
+                src={`https://s2.coinmarketcap.com/static/img/coins/64x64/${r.id}.png`}
+                alt={r.id}
+              />
+              {r.name}
+            </TokenList>
+          ))}
+        </div>
+      ) : null}
+    </Wrapper>
   );
 };
 
