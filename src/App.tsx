@@ -9,6 +9,7 @@ import AddToken from "./Add";
 import useGetListings from "./hooks/useGetListings";
 import useGetMapStorage from "./hooks/useGetMapStorage";
 import useSubsequentUpdate from "./hooks/useSubsequentUpdate";
+import eventEmitter from "./utils/eventEmitter";
 
 const Separater = "_";
 
@@ -75,6 +76,7 @@ export default function App() {
       WS = new WebSocket("wss://stream.coinmarketcap.com/price/latest");
       WSInstance.current = WS;
     } catch (e) {
+      console.log("reconnect!");
       setTimeout(() => {
         initWS();
         subscribeWS(ids);
@@ -109,6 +111,8 @@ export default function App() {
         const data = JSON.parse(res.data);
         if (data?.d?.cr) {
           const info = data.d.cr;
+          // console.log(info);
+          eventEmitter.emit(`WS-${info.id}`, info);
           setPrices((prices) => {
             return prices.map((p) => {
               if (p.id === info.id) {
@@ -221,9 +225,9 @@ export default function App() {
           onAdd={(id: number) => handleAddOrRemove(id, true)}
           mapData={mapData}
         />
-        <button onClick={() => handleExpand(false)}>{"Collapse"}</button>
-        &nbsp;
-        <button onClick={() => handleExpand(true)}>{"Expand"}</button>
+        <button onClick={() => handleExpand(false)}>{"Collapse All"}</button>
+        {/* &nbsp;
+        <button onClick={() => handleExpand(true)}>{"Expand"}</button> */}
       </HeadWrapper>
       <Wrapper>
         {prices.map((info: any, idx) => (
@@ -240,6 +244,7 @@ export default function App() {
           />
         ))}
       </Wrapper>
+      <button onClick={() => console.log(eventEmitter)}>Log!</button>
       {/* <WSStatus /> */}
       {ids.length ? (
         <Footer

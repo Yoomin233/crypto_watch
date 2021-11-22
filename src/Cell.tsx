@@ -1,7 +1,11 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
-import ImgLoading from "./components/ImgLoading";
+// import ImgLoading from "./components/ImgLoading";
+import LazyRender from "./components/lazyRender";
+import Spinner from "./components/Spinner";
 import { determineFraction } from "./utils/number";
+
+const LazyChart = lazy(() => import("./components/chart"));
 
 const Wrapper = styled.div`
   display: inline-block;
@@ -51,7 +55,7 @@ const CellWrapper = styled.div`
   span.price {
     font-weight: bold;
     font-size: 1.2em;
-    transition: all .1s linear;
+    transition: all 0.1s linear;
     &.up {
       color: var(--up-color);
     }
@@ -81,6 +85,7 @@ const MoreSection = styled.div`
   .buttons {
     display: grid;
     gap: 4px;
+    margin-left: 8px;
   }
 `;
 
@@ -95,10 +100,10 @@ const ChartsWrapper = styled.div`
       border-top-left-radius: 6px;
       border-bottom-left-radius: 6px;
       padding: 2px 8px;
-      border-right-color: var(--border-color);
+      border-right-color: #1fe230;
       &.selected {
         /* color: yellow; */
-        border-color: var(--border-color);
+        border-color: #1fe230;
         border-right-color: transparent;
       }
     }
@@ -109,39 +114,39 @@ const ChartsWrapper = styled.div`
 `;
 
 const ChartsGroup = ({ id = 1 }) => {
-  const [period, setPeriod] = useState(7);
+  const [period, setPeriod] = useState('1D');
   return (
     <ChartsWrapper>
       <div className="switch">
         <span
-          className={period === 1 ? "selected" : undefined}
-          onClick={() => setPeriod(1)}
+          className={period === '1D' ? "selected" : undefined}
+          onClick={() => setPeriod('1D')}
         >
           24h
         </span>
         <span
-          className={period === 7 ? "selected" : undefined}
-          onClick={() => setPeriod(7)}
+          className={period === '7D' ? "selected" : undefined}
+          onClick={() => setPeriod('7D')}
         >
-          7d
+          7D
         </span>
         <span
-          className={period === 30 ? "selected" : undefined}
-          onClick={() => setPeriod(30)}
+          className={period === '1M' ? "selected" : undefined}
+          onClick={() => setPeriod('1M')}
         >
-          30d
+          1M
         </span>
         <span
-          className={period === 60 ? "selected" : undefined}
-          onClick={() => setPeriod(60)}
+          className={period === '3M' ? "selected" : undefined}
+          onClick={() => setPeriod('3M')}
         >
-          60d
+          3M
         </span>
         <span
-          className={period === 90 ? "selected" : undefined}
-          onClick={() => setPeriod(90)}
+          className={period === '1Y' ? "selected" : undefined}
+          onClick={() => setPeriod('1Y')}
         >
-          90d
+          1Y
         </span>
       </div>
       <Charts id={id} period={period} />
@@ -149,13 +154,18 @@ const ChartsGroup = ({ id = 1 }) => {
   );
 };
 
-const Charts = ({ id = 1, period = 7 }) => {
+const Charts = ({ id = 1, period = '1D' }) => {
   return (
-    <ImgLoading
-      src={`https://s3.coinmarketcap.com/generated/sparklines/web/${period}d/2781/${id}.svg`}
-      alt={`${id} sparkline`}
-    />
+    <Suspense fallback={<Spinner />}>
+      <LazyChart id={id} period={period} />
+    </Suspense>
   );
+  //   return (
+  //     <ImgLoading
+  //       src={`https://s3.coinmarketcap.com/generated/sparklines/web/${period}d/2781/${id}.svg`}
+  //       alt={`${id} sparkline`}
+  //     />
+  //   );
 };
 
 const PriceCell = ({
@@ -267,7 +277,7 @@ const PriceCell = ({
           </span>
         </span>
       </CellWrapper>
-      {isExpanded && (
+      <LazyRender show={isExpanded}>
         <MoreSection>
           <ChartsGroup id={id} />
           <div className="buttons">
@@ -281,11 +291,11 @@ const PriceCell = ({
               ⬇
             </button>
             <button onClick={() => onRemove(id)} className="danger">
-              ╳
+              ❌
             </button>
           </div>
         </MoreSection>
-      )}
+      </LazyRender>
     </Wrapper>
   );
 };

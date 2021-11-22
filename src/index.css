@@ -58,21 +58,23 @@ code {
 }
 
 button {
-  background: rgb(95, 127, 216);
+  /* background: rgb(95, 127, 216); */
   color: inherit;
   border: none;
   font-size: 1em;
   border-radius: 4px;
   padding: 4px 8px;
   color: #fff;
+  border: 1px solid #1fe230;
+  background: transparent;
 }
 
 button:disabled {
-  background-color: #b6b6b6;
+  border-color: #b6b6b6;
 }
 
 button.danger {
-  background-color: var(--down-color);
+  color: var(--down-color);
   font-weight: bold;
 }
 

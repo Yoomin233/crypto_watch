@@ -1,29 +1,6 @@
 import { useEffect, useState } from "react";
-import styled, { keyframes } from "styled-components";
-
-const spin = keyframes`
-    to {
-        transform: rotate(1turn);
-    }
-`;
-
-// console.log(spin);
-
-const Spinner = styled.span`
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-grow: 1;
-  > span {
-    border: 3px solid var(--border-color);
-    border-radius: 50%;
-    border-top-color: var(--text-color);
-    width: 1em;
-    height: 1em;
-    animation: ${spin} 1s linear 0s infinite;
-  }
-`;
+// import styled, { keyframes } from "styled-components";
+import Spinner from "./Spinner";
 
 const ImgLoading: React.FC<
   React.DetailedHTMLProps<
@@ -41,18 +18,12 @@ const ImgLoading: React.FC<
       console.log("loaded!");
     };
   }, [src]);
-//   return (
-//     <Spinner>
-//       <span></span>
-//     </Spinner>
-//   );
-  return loaded ? (
-    <img src={src} alt={alt} />
-  ) : (
-    <Spinner>
-      <span></span>
-    </Spinner>
-  );
+  //   return (
+  //     <Spinner>
+  //       <span></span>
+  //     </Spinner>
+  //   );
+  return loaded ? <img src={src} alt={alt} /> : <Spinner></Spinner>;
 };
 
 export default ImgLoading;
