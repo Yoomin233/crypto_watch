@@ -114,37 +114,37 @@ const ChartsWrapper = styled.div`
 `;
 
 const ChartsGroup = ({ id = 1 }) => {
-  const [period, setPeriod] = useState('1D');
+  const [period, setPeriod] = useState("1D");
   return (
     <ChartsWrapper>
       <div className="switch">
         <span
-          className={period === '1D' ? "selected" : undefined}
-          onClick={() => setPeriod('1D')}
+          className={period === "1D" ? "selected" : undefined}
+          onClick={() => setPeriod("1D")}
         >
           24h
         </span>
         <span
-          className={period === '7D' ? "selected" : undefined}
-          onClick={() => setPeriod('7D')}
+          className={period === "7D" ? "selected" : undefined}
+          onClick={() => setPeriod("7D")}
         >
           7D
         </span>
         <span
-          className={period === '1M' ? "selected" : undefined}
-          onClick={() => setPeriod('1M')}
+          className={period === "1M" ? "selected" : undefined}
+          onClick={() => setPeriod("1M")}
         >
           1M
         </span>
         <span
-          className={period === '3M' ? "selected" : undefined}
-          onClick={() => setPeriod('3M')}
+          className={period === "3M" ? "selected" : undefined}
+          onClick={() => setPeriod("3M")}
         >
           3M
         </span>
         <span
-          className={period === '1Y' ? "selected" : undefined}
-          onClick={() => setPeriod('1Y')}
+          className={period === "1Y" ? "selected" : undefined}
+          onClick={() => setPeriod("1Y")}
         >
           1Y
         </span>
@@ -154,7 +154,7 @@ const ChartsGroup = ({ id = 1 }) => {
   );
 };
 
-const Charts = ({ id = 1, period = '1D' }) => {
+const Charts = ({ id = 1, period = "1D" }) => {
   return (
     <Suspense fallback={<Spinner />}>
       <LazyChart id={id} period={period} />
@@ -214,19 +214,19 @@ const PriceCell = ({
     prices[idx + idxOffset] = prices[idx];
     prices[idx] = temp;
 
-    const expandTemp = expandStatus[idx + idxOffset];
-    expandStatus[idx + idxOffset] = expandStatus[idx];
-    expandStatus[idx] = expandTemp;
+    // const expandTemp = expandStatus[idx + idxOffset];
+    // expandStatus[idx + idxOffset] = expandStatus[idx];
+    // expandStatus[idx] = expandTemp;
     setPrices([...prices]);
-    setExpandStatus([...expandStatus]);
+    // setExpandStatus([...expandStatus]);
   };
 
-  useEffect(() => {
-    expandStatus[idx] = 0;
-    setExpandStatus([...expandStatus]);
-  }, []);
+  //   useEffect(() => {
+  //     expandStatus[id] = 0;
+  //     setExpandStatus([...expandStatus]);
+  //   }, []);
 
-  const isExpanded = !!expandStatus[idx];
+  const isExpanded = !!expandStatus[id];
 
   const priceDisplay = useMemo(() => {
     // console.log(price);
@@ -239,8 +239,8 @@ const PriceCell = ({
         key={id}
         onClick={() => {
           // console.log("click!", expand);
-          expandStatus[idx] = !expandStatus[idx];
-          setExpandStatus([...expandStatus]);
+          expandStatus[id] = !expandStatus[id];
+          setExpandStatus({ ...expandStatus });
         }}
       >
         <a
@@ -269,8 +269,14 @@ const PriceCell = ({
             style={{
               backgroundColor:
                 p24h > 0
-                  ? `rgba(0, 255, 0, ${Math.sqrt(Math.abs(p24h / 10))})`
-                  : `rgba(255, 0, 0, ${Math.sqrt(Math.abs(p24h / 10))})`,
+                  ? `rgba(0, 255, 0, ${Math.max(
+                      0.5,
+                      Math.sqrt(Math.abs(p24h / 10))
+                    )})`
+                  : `rgba(255, 0, 0, ${Math.max(
+                      0.5,
+                      Math.sqrt(Math.abs(p24h / 10))
+                    )})`,
             }}
           >
             {p24h ? `${p24h.toFixed(2)}%` : ""}
@@ -282,13 +288,13 @@ const PriceCell = ({
           <ChartsGroup id={id} />
           <div className="buttons">
             <button onClick={() => onMove(true)} disabled={idx === 0}>
-              ⬆
+              ⇧
             </button>
             <button
               onClick={() => onMove()}
               disabled={idx === prices.length - 1}
             >
-              ⬇
+              ⇩
             </button>
             <button onClick={() => onRemove(id)} className="danger">
               ❌

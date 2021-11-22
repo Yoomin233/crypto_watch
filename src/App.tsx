@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
 import styled from "styled-components";
-import Footer from "./Footer";
+import Status from "./Footer";
 import PriceCell from "./Cell";
 // import useGetMapStorage from "./hooks/useGetMapStorage";
 // import WSStatus from "./Status";
@@ -10,6 +10,7 @@ import useGetListings from "./hooks/useGetListings";
 import useGetMapStorage from "./hooks/useGetMapStorage";
 import useSubsequentUpdate from "./hooks/useSubsequentUpdate";
 import eventEmitter from "./utils/eventEmitter";
+import Info from "./Info";
 
 const Separater = "_";
 
@@ -54,9 +55,7 @@ export default function App() {
 
   // console.log(prices);
 
-  const [expandStatus, setExpandStatus] = useState(() =>
-    Array.from({ length: prices.length }).fill(0)
-  );
+  const [expandStatus, setExpandStatus] = useState({});
 
   // console.log(expandStatus);
 
@@ -173,9 +172,9 @@ export default function App() {
 
   const handleExpand = (expand?: boolean) => {
     if (expand) {
-      setExpandStatus((e) => e.map((_) => 1));
+      // setExpandStatus((e) => e.map((_) => 1));
     } else {
-      setExpandStatus((e) => e.map((_) => 0));
+      setExpandStatus({});
     }
   };
 
@@ -244,13 +243,14 @@ export default function App() {
           />
         ))}
       </Wrapper>
-      <button onClick={() => console.log(eventEmitter)}>Log!</button>
+      <Info />
+      {/* <button onClick={() => console.log(eventEmitter)}>Log!</button> */}
       {/* <WSStatus /> */}
       {ids.length ? (
-        <Footer
+        <Status
           wsStatus={wsStatus}
           // wsInstance={WSInstance}
-          // reconnect={reconnect}
+          reconnect={reconnect}
           lastRefetch={lastRefetch}
         />
       ) : null}

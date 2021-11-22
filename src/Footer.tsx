@@ -13,7 +13,7 @@ const Wrapper = styled.p`
   /* border-top: 1px solid var(--border-color); */
   display: grid;
   grid-auto-flow: column;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr;
   align-items: center;
   transition: all 0.3s ease-in-out, transform 0.3s linear 3s;
 
@@ -45,11 +45,12 @@ const Wrapper = styled.p`
 const Footer = ({
   wsStatus,
   lastRefetch,
+  reconnect,
 }: // reconnect,
 {
   wsStatus: number;
   lastRefetch: Date;
-  // reconnect: any;
+  reconnect: any;
 }) => {
   const status = wsStatus;
   //   console.log(status);
@@ -64,12 +65,6 @@ const Footer = ({
   return (
     <Wrapper className={statusString}>
       <span>
-        Data Source:{" "}
-        <a href="https://coinmarketcap.com/" target="_blank" rel="noreferrer">
-          CoinMarketCap
-        </a>
-      </span>
-      <span>
         <i>
           {((+new Date() - Number(lastRefetch)) / 1000).toFixed(0) +
             " Seconds ago"}
@@ -77,6 +72,7 @@ const Footer = ({
       </span>
       <span>
         <i>{statusString}</i>
+        {status === 3 && <button onClick={reconnect}>Reconnect</button>}
       </span>
     </Wrapper>
   );

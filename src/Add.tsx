@@ -21,6 +21,7 @@ const Wrapper = styled.div`
     width: 100%;
     text-align: left;
     padding-left: 8px;
+    z-index: 10;
   }
 `;
 
@@ -45,7 +46,7 @@ const AddToken = ({ onAdd, mapData }: any) => {
       <input
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        placeholder={mapArr.length ? "Type Something..." : "Loading..."}
+        placeholder={mapArr.length ? "Try 'Bitcoin'" : "Loading..."}
         disabled={!mapArr.length}
         ref={ref}
       />
