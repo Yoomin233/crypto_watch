@@ -4,7 +4,6 @@ export const Wrapper = styled.div`
   display: inline-block;
   padding: 6px 8px;
   /* margin-top: 8px; */
-  width: calc(50%);
   vertical-align: top;
   /* display: inline-block; */
   /* border-left: 1px solid #fff; */
@@ -12,9 +11,16 @@ export const Wrapper = styled.div`
   cursor: pointer;
   box-sizing: border-box;
   user-select: none;
+  white-space: nowrap;
+  width: 33%;
   border-bottom: 1px solid var(--border-color);
+  @media screen and (min-width: 1200px) {
+    width: 25%;
+  }
+  @media screen and (min-width: 451px) and (max-width: 750px) {
+    width: calc(50%);
+  }
   @media screen and (max-width: 450px) {
-    white-space: nowrap;
     width: 100%;
     /* overflow: hidden; */
   }
@@ -72,6 +78,8 @@ export const MoreSection = styled.div`
   /* border-bottom: 1px solid var(--border-color); */
   justify-content: space-between;
   display: flex;
+  position: relative;
+  overflow: hidden;
   button {
     font-size: 0.8em;
   }
@@ -79,6 +87,21 @@ export const MoreSection = styled.div`
     display: grid;
     gap: 4px;
     margin-left: 8px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    z-index: 10;
+    background-color: var(--background-color);
+    transform: translateX(calc(101%));
+    transition: all 0.3s ease;
+    &.edit {
+      transform: none;
+    }
+    /* overflow: hidden; */
+    /* > button {
+    } */
+    /* background: red; */
   }
 `;
 
@@ -92,7 +115,7 @@ export const ChartsWrapper = styled.div`
       border: 1px solid transparent;
       border-top-left-radius: 6px;
       border-bottom-left-radius: 6px;
-      padding: 2px 8px;
+      padding: 2px 4px;
       border-right-color: #1fe230;
       &.selected {
         /* color: yellow; */

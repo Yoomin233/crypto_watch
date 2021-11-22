@@ -34,6 +34,7 @@ const HeadWrapper = styled.div`
 
 export default function App() {
   const [wsStatus, setWSStatus] = useState<number>(0);
+  const [edit, setEdit] = useState(false);
 
   const [prices, setPrices] = useState<
     {
@@ -225,6 +226,8 @@ export default function App() {
           mapData={mapData}
         />
         <button onClick={() => handleExpand(false)}>{"Collapse All"}</button>
+        &nbsp;
+        <button onClick={() => setEdit(!edit)}>{edit ? "Done" : "Edit"}</button>
         {/* &nbsp;
         <button onClick={() => handleExpand(true)}>{"Expand"}</button> */}
       </HeadWrapper>
@@ -240,6 +243,7 @@ export default function App() {
             idx={idx}
             expandStatus={expandStatus}
             setExpandStatus={setExpandStatus}
+            edit={edit}
           />
         ))}
       </Wrapper>

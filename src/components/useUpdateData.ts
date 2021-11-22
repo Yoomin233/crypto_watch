@@ -47,12 +47,14 @@ const useUpdateData = (id: number, period: string): [any[], boolean] => {
     getData();
     const subscriber = eventEmitter.subscribe(`WS-${id}`, (wsData: any) => {
       setData((data) => {
+        if (!data.length) return data;
         const lastData = data[data.length - 1];
         const lastDataTime = lastData.time * 1000;
         const now = Number(new Date());
-        const shouldInsertNewData = TimeInterval[period];
+        const shouldInsertNewData = TimeInterval[period] * 1000;
+        // console.log(now, lastDataTime, shouldInsertNewData);
         if (now - lastDataTime >= shouldInsertNewData) {
-          console.log("insert new line!");
+          // console.log("insert new line!");
           return [
             ...data,
             {
@@ -62,8 +64,8 @@ const useUpdateData = (id: number, period: string): [any[], boolean] => {
           ];
         } else {
           // lastData.time = now
-          console.log("in-place update!");
-          lastData.price = wsData.p;
+          // console.log("in-place update!");
+          lastData.value = wsData.p;
           return [...data];
         }
         // console.log(lastDataTime);

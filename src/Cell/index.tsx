@@ -75,6 +75,7 @@ const PriceCell = memo(
     idx,
     expandStatus,
     setExpandStatus,
+    edit,
   }: any) => {
     const { id, p24h, price, slug, symbol } = info;
     const lastPrice = useRef(price);
@@ -162,10 +163,11 @@ const PriceCell = memo(
             </span>
           </span>
         </CellWrapper>
-        <LazyRender show={isExpanded}>
+        {/* <LazyRender show={isExpanded}> */}
+        {isExpanded && (
           <MoreSection>
             <ChartsGroup id={id} />
-            <div className="buttons">
+            <div className={`buttons ${edit ? "edit" : undefined}`}>
               <button onClick={() => onMove(true)} disabled={idx === 0}>
                 ⇧
               </button>
@@ -180,7 +182,8 @@ const PriceCell = memo(
               </button>
             </div>
           </MoreSection>
-        </LazyRender>
+        )}
+        {/* </LazyRender> */}
       </Wrapper>
     );
   }

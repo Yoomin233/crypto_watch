@@ -80,6 +80,22 @@ const TVChartWrapper = styled.div`
   width: 100%;
 `;
 
+const Wrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  position: relative;
+  &.loading {
+    div.tv-lightweight-charts {
+      filter: blur(4px);
+    }
+  }
+  > span {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+`;
+
 const TVChart: React.FC<{ id: number; period: string }> = ({
   id = 1,
   period = "1D",
@@ -134,6 +150,8 @@ const TVChart: React.FC<{ id: number; period: string }> = ({
   useEffect(() => {
     // console.log("render!", domRef.current);
     if (!domRef.current) return;
+
+    // console.log('update!', data)
 
     // console.log(domRef.current, chartRef.current, seriesRef.current);
 
@@ -203,7 +221,7 @@ const TVChart: React.FC<{ id: number; period: string }> = ({
 
     seriesRef.current.setData(data);
 
-    console.log("mount!!");
+    // console.log("mount!!");
 
     //   seriesRef.current.setData(data as any);
     //   areaSeries.re
@@ -237,10 +255,10 @@ const TVChart: React.FC<{ id: number; period: string }> = ({
 
   //   if (!data.length) return ;
   return (
-    <>
+    <Wrapper className={loading ? "loading" : undefined}>
       <TVChartWrapper ref={domRef}></TVChartWrapper>
-      {/* <Spinner></Spinner> */}
-    </>
+      {loading && <Spinner></Spinner>}
+    </Wrapper>
   );
 };
 

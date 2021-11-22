@@ -1,27 +1,27 @@
 {
   "files": {
     "main.css": "/crypto_watch/build/static/css/main.22c84890.chunk.css",
-    "main.js": "/crypto_watch/build/static/js/main.a34de03e.chunk.js",
-    "main.js.map": "/crypto_watch/build/static/js/main.a34de03e.chunk.js.map",
-    "runtime-main.js": "/crypto_watch/build/static/js/runtime-main.54e34257.js",
-    "runtime-main.js.map": "/crypto_watch/build/static/js/runtime-main.54e34257.js.map",
-    "static/js/2.2febcb30.chunk.js": "/crypto_watch/build/static/js/2.2febcb30.chunk.js",
-    "static/js/2.2febcb30.chunk.js.map": "/crypto_watch/build/static/js/2.2febcb30.chunk.js.map",
-    "static/js/3.21c76e00.chunk.js": "/crypto_watch/build/static/js/3.21c76e00.chunk.js",
-    "static/js/3.21c76e00.chunk.js.map": "/crypto_watch/build/static/js/3.21c76e00.chunk.js.map",
-    "static/js/4.b95bd626.chunk.js": "/crypto_watch/build/static/js/4.b95bd626.chunk.js",
-    "static/js/4.b95bd626.chunk.js.map": "/crypto_watch/build/static/js/4.b95bd626.chunk.js.map",
-    "static/js/5.0fb002af.chunk.js": "/crypto_watch/build/static/js/5.0fb002af.chunk.js",
-    "static/js/5.0fb002af.chunk.js.map": "/crypto_watch/build/static/js/5.0fb002af.chunk.js.map",
+    "main.js": "/crypto_watch/build/static/js/main.2e3ae736.chunk.js",
+    "main.js.map": "/crypto_watch/build/static/js/main.2e3ae736.chunk.js.map",
+    "runtime-main.js": "/crypto_watch/build/static/js/runtime-main.101a2748.js",
+    "runtime-main.js.map": "/crypto_watch/build/static/js/runtime-main.101a2748.js.map",
+    "static/js/2.40e59195.chunk.js": "/crypto_watch/build/static/js/2.40e59195.chunk.js",
+    "static/js/2.40e59195.chunk.js.map": "/crypto_watch/build/static/js/2.40e59195.chunk.js.map",
+    "static/js/3.20089f03.chunk.js": "/crypto_watch/build/static/js/3.20089f03.chunk.js",
+    "static/js/3.20089f03.chunk.js.map": "/crypto_watch/build/static/js/3.20089f03.chunk.js.map",
+    "static/js/4.e6cedd83.chunk.js": "/crypto_watch/build/static/js/4.e6cedd83.chunk.js",
+    "static/js/4.e6cedd83.chunk.js.map": "/crypto_watch/build/static/js/4.e6cedd83.chunk.js.map",
+    "static/js/5.8a52ec48.chunk.js": "/crypto_watch/build/static/js/5.8a52ec48.chunk.js",
+    "static/js/5.8a52ec48.chunk.js.map": "/crypto_watch/build/static/js/5.8a52ec48.chunk.js.map",
     "index.html": "/crypto_watch/build/index.html",
     "static/css/main.22c84890.chunk.css.map": "/crypto_watch/build/static/css/main.22c84890.chunk.css.map",
-    "static/js/2.2febcb30.chunk.js.LICENSE.txt": "/crypto_watch/build/static/js/2.2febcb30.chunk.js.LICENSE.txt",
-    "static/js/4.b95bd626.chunk.js.LICENSE.txt": "/crypto_watch/build/static/js/4.b95bd626.chunk.js.LICENSE.txt"
+    "static/js/2.40e59195.chunk.js.LICENSE.txt": "/crypto_watch/build/static/js/2.40e59195.chunk.js.LICENSE.txt",
+    "static/js/4.e6cedd83.chunk.js.LICENSE.txt": "/crypto_watch/build/static/js/4.e6cedd83.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
-    "static/js/runtime-main.54e34257.js",
-    "static/js/2.2febcb30.chunk.js",
+    "static/js/runtime-main.101a2748.js",
+    "static/js/2.40e59195.chunk.js",
     "static/css/main.22c84890.chunk.css",
-    "static/js/main.a34de03e.chunk.js"
+    "static/js/main.2e3ae736.chunk.js"
   ]
 }
