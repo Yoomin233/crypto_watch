@@ -2,7 +2,6 @@ import axios from "axios";
 import {
   BusinessDay,
   createChart,
-  ISeriesApi,
   TickMarkType,
   UTCTimestamp,
 } from "lightweight-charts";
@@ -12,6 +11,7 @@ import styled from "styled-components";
 import eventEmitter from "../utils/eventEmitter";
 // import useSubsequentUpdate from "../hooks/useSubsequentUpdate";
 import Spinner from "./Spinner";
+import useUpdateData from "./useUpdateData";
 
 // type DataStruct = { time: "string"; value: number };
 
@@ -82,18 +82,24 @@ const TVChartWrapper = styled.div`
 
 const TVChart: React.FC<{ id: number; period: string }> = ({
   id = 1,
-  period = 7,
+  period = "1D",
 }) => {
   const domRef = useRef<HTMLDivElement>(null);
 
   const chartRef = useRef<any>(null);
   const seriesRef = useRef<any>(null);
 
-  const [data, setData] = useState<any[]>([]);
+  const clear = () => {
+    if (chartRef.current) {
+      chartRef.current.remove();
+    }
+  };
+
+  const [data, loading] = useUpdateData(id, period);
 
   //   const timerRef = useRef(null)
 
-  const [loading, setLoading] = useState<boolean>(true);
+  //   const [loading, setLoading] = useState<boolean>(true);
   //   const [error, setError] = useState(false);
 
   //   useEffect(() => {
@@ -105,136 +111,136 @@ const TVChart: React.FC<{ id: number; period: string }> = ({
   //     }
   //   }, [loading]);
 
-  const getData = useCallback(() => {
-    return axios
-      .get(
-        `https://api.coinmarketcap.com/data-api/v3/cryptocurrency/detail/chart?id=${id}&range=${period}`
-      )
-      .then(({ data }) => {
-        const mappedData = Object.entries<any>(data.data.points).map(
-          ([key, value]) => ({
-            time: Number(key),
-            value: value.v[0],
-          })
-        );
-        // console.log(mappedData);
-        setData(mappedData);
-        return mappedData;
-
-        // console.log(data.data.points);
-      })
-      .catch((e) => {
-        return [];
-      });
-  }, [id, period]);
-
-  //   useSubsequentUpdate(() => {
-  // }, `${id}${period}`);
-
-  const clear = () => {
-    if (chartRef.current) {
-      chartRef.current.remove();
-    }
-    // console.log(ref.current?.children?.[0]);
-    // ref.current?.removeChild(ref.current?.children?.[0]);
-    // if (ref.current) {
-    //   ref.current.innerHTML = "";
-    // }
-    // setData([]);
-  };
+  //   const getData = useCallback(() => {
+  //     return axios
+  //       .get(
+  //         `https://api.coinmarketcap.com/data-api/v3/cryptocurrency/detail/chart?id=${id}&range=${period}`
+  //       )
+  //       .then(({ data }) => {
+  //         const mappedData = Object.entries<any>(data.data.points).map(
+  //           ([key, value]) => ({
+  //             time: Number(key),
+  //             value: value.v[0],
+  //           })
+  //         );
+  //         setData(mappedData);
+  //         return mappedData;
+  //       })
+  //       .catch((e) => {
+  //         return [];
+  //       });
+  //   }, [id, period]);
 
   useEffect(() => {
+    // console.log("render!", domRef.current);
     if (!domRef.current) return;
-    clear();
-    setLoading(true);
-    // console.log("exec!");
+
+    // console.log(domRef.current, chartRef.current, seriesRef.current);
+
+    if (chartRef.current && seriesRef.current) {
+      seriesRef.current.setData(data);
+      chartRef.current.timeScale().fitContent();
+      return;
+    }
+
+    // clear();
+    // setLoading(true);
+
+    // console.log("init render!", data);
     const { width, height } = domRef.current.getBoundingClientRect();
 
-    let subscriber: any;
+    const chart = createChart(domRef.current, {
+      width,
+      height,
+      handleScale: {
+        mouseWheel: false,
+        pinch: false,
+        axisPressedMouseMove: false,
+      },
+      rightPriceScale: {
+        borderVisible: false,
+      },
+      timeScale: {
+        borderVisible: false,
+        timeVisible: true,
+        fixLeftEdge: true,
+        fixRightEdge: true,
+        tickMarkFormatter: (
+          time: UTCTimestamp | BusinessDay,
+          tickMarkType: TickMarkType,
+          locale: string
+        ) => {
+          return new Date(Number(time) * 1000).toLocaleDateString();
 
-    getData().then((data) => {
-      //   console.log(data);
-      if (!domRef.current) return;
-      //   setData(data);
-      const chart = createChart(domRef.current, {
-        width,
-        height,
-        handleScale: {
-          mouseWheel: false,
-          pinch: false,
-          axisPressedMouseMove: false,
+          //   console.log(time, tickMarkType);
+          //   return "333";
         },
-        rightPriceScale: {
-          borderVisible: false,
+      },
+      localization: {
+        timeFormatter: (time: BusinessDay | UTCTimestamp) => {
+          // console.log(time);
+          return new Date(Number(time) * 1000).toLocaleString();
+          // return dayjs.unix(time).toDate().toLocaleDateString(locale);
         },
-        timeScale: {
-          borderVisible: false,
-          timeVisible: true,
-          fixLeftEdge: true,
-          fixRightEdge: true,
-          tickMarkFormatter: (
-            time: UTCTimestamp | BusinessDay,
-            tickMarkType: TickMarkType,
-            locale: string
-          ) => {
-            return new Date(Number(time) * 1000).toLocaleDateString();
-
-            //   console.log(time, tickMarkType);
-            //   return "333";
-          },
-        },
-        localization: {
-          timeFormatter: (time: BusinessDay | UTCTimestamp) => {
-            // console.log(time);
-            return new Date(Number(time) * 1000).toLocaleString();
-            // return dayjs.unix(time).toDate().toLocaleDateString(locale);
-          },
-        },
-      });
-
-      chartRef.current = chart;
-
-      seriesRef.current = chart.addAreaSeries({
-        topColor: "rgba(33, 150, 243, 0.56)",
-        bottomColor: "rgba(33, 150, 243, 0.04)",
-        lineColor: "rgba(33, 150, 243, 1)",
-        lineWidth: 1,
-      });
-
-      chart.applyOptions(themesData["Dark"].chart);
-      seriesRef.current.applyOptions(themesData["Dark"].series);
-
-      setLoading(false);
-
-      chart.timeScale().fitContent();
-
-      seriesRef.current.setData(data as any);
-      //   areaSeries.re
-
-      subscriber = eventEmitter.subscribe(`WS-${id}`, (wsData: any) => {
-        setData((data) => [
-          ...data,
-          {
-            time: Math.floor(Number(new Date()) / 1000),
-            value: wsData.p,
-          },
-        ]);
-      });
+      },
     });
-    return () => eventEmitter.unsubscribe(`WS-${id}`, subscriber);
-  }, [getData]);
 
-  useEffect(() => {
-    if (seriesRef.current && data.length) {
-      seriesRef.current.setData(data as any);
-    }
-  }, [data]);
+    chartRef.current = chart;
+
+    seriesRef.current = chart.addAreaSeries({
+      topColor: "rgba(33, 150, 243, 0.56)",
+      bottomColor: "rgba(33, 150, 243, 0.04)",
+      lineColor: "rgba(33, 150, 243, 1)",
+      lineWidth: 1,
+    });
+
+    chart.applyOptions(themesData["Dark"].chart);
+    seriesRef.current.applyOptions(themesData["Dark"].series);
+
+    // setLoading(false);
+
+    chart.timeScale().fitContent();
+
+    seriesRef.current.setData(data);
+
+    console.log("mount!!");
+
+    //   seriesRef.current.setData(data as any);
+    //   areaSeries.re
+
+    //   subscriber = eventEmitter.subscribe(`WS-${id}`, (wsData: any) => {
+    //     setData((data) => [
+    //       ...data,
+    //       {
+    //         time: Math.floor(Number(new Date()) / 1000),
+    //         value: wsData.p,
+    //       },
+    //     ]);
+    //   });
+    // });
+    // return () => eventEmitter.unsubscribe(`WS-${id}`, subscriber);
+  }, [id, data]);
+
+  //   useEffect(() => {
+  //     clear();
+  //   }, [period]);
+
+  //   useEffect(() => {
+  //     console.log("data update!", seriesRef.current);
+  //     if (seriesRef.current && data.length) {
+  //       //   console.log("update!");
+  //       seriesRef.current.setData(data as any);
+  //     }
+  //   }, [data]);
+
+  //   console.log(data);
 
   //   if (!data.length) return ;
   return (
-    <TVChartWrapper ref={domRef}>
-      {loading ? <Spinner></Spinner> : null}
-    </TVChartWrapper>
+    <>
+      <TVChartWrapper ref={domRef}></TVChartWrapper>
+      {/* <Spinner></Spinner> */}
+    </>
   );
 };
 
