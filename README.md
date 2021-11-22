@@ -1,7 +1,27 @@
-Try it out:
+## Try it out:
 
 https://yueminhu.github.io/crypto_watch/build/?ids=1_1839_1027_7083_2010_6636_7186_1765_5426_7288_8104_11156_8119_9891_13855_5899_10030_12082_11885
 
+## Features:
+* Uses CoinMarketCap Data
+* Add Crypto as you want
+* Real-time price update on both price number & line chart
+* And more!
+
+
+## Screenshots:
+
+### Desktop View
+
+![alt text](https://i.imgur.com/ikPSHDK.png "Screenshot1")
+
+### Mobile View:
+
+![alt text](https://i.imgur.com/5gKKVK1.png "Screenshot2")
+
+
+
+<!-- 
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
@@ -47,4 +67,4 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+To learn React, check out the [React documentation](https://reactjs.org/). -->
