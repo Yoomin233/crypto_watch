@@ -36,7 +36,7 @@ const useGetMapStorage = (key: string) => {
   useEffect(() => {
     if (localStorage.getItem(key)) {
       const timeStamp = JSON.parse(String(localStorage.getItem(key))).timeStamp;
-      if (timeStamp + 1000 * 3600 * 24 <= +new Date()) {
+      if (timeStamp + 1000 * 3600 * 24 <= Number(new Date())) {
         console.log("refetch!");
         fetchMap();
       }

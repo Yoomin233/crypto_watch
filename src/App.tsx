@@ -27,6 +27,15 @@ const HeadWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: sticky;
+  /* top: 0; */
+  background-image: linear-gradient(
+    to bottom,
+    var(--background-color) 0%,
+    var(--background-color) 70%,
+    transparent 100%
+  );
+  top: -1px;
   > div:first-child {
     flex-grow: 1;
   }
