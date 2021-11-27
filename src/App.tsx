@@ -41,6 +41,16 @@ const HeadWrapper = styled.div`
   }
 `;
 
+const getIds = () => {
+  const idsStored =
+    localStorage.getItem(LOCAL_ID_KEY) ||
+    new URL(window.location.href).searchParams.get("ids") ||
+    "";
+  return idsStored.split(Separater).map((id) => ({
+    id: Number(id) || 1,
+  }));
+};
+
 export default function App() {
   const [wsStatus, setWSStatus] = useState<number>(0);
   const [edit, setEdit] = useState(false);
@@ -53,15 +63,7 @@ export default function App() {
       slug?: string;
       name?: string;
     }[]
-  >(() => {
-    const ids = new URL(window.location.href).searchParams.get("ids");
-    if (ids) {
-      return ids.split(Separater).map((id) => ({
-        id: Number(id) || 1,
-      }));
-    }
-    return [];
-  });
+  >(getIds);
 
   // console.log(prices);
 
@@ -194,14 +196,14 @@ export default function App() {
     window.history.replaceState("", document.title, url);
   };
 
-  useEffect(() => {
-    const idsStored = localStorage.getItem(LOCAL_ID_KEY);
-    const idsUrl = new URL(window.location.href).searchParams.get("ids");
-    // console.log(idsStored, idsUrl);
-    if (idsStored !== idsUrl && idsStored) {
-      writeURL(idsStored);
-    }
-  }, []);
+  // useEffect(() => {
+  //   const idsStored = localStorage.getItem(LOCAL_ID_KEY);
+  //   const idsUrl = new URL(window.location.href).searchParams.get("ids");
+  //   // console.log(idsStored, idsUrl);
+  //   if (idsStored !== idsUrl && idsStored) {
+  //     writeURL(idsStored);
+  //   }
+  // }, []);
 
   /**
    * rewrite URL when id length / order changes

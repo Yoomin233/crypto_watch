@@ -136,38 +136,8 @@ const PriceCell = memo(
             />
             {name || symbol || "unknown"}
           </a>
-          <span>
-            <span
-              className={`price ${
-                isUp === 1 ? "up" : isUp === -1 ? "down" : undefined
-              }`}
-            >
-              {priceDisplay}
-            </span>
-            <span
-              className="percentage"
-              style={{
-                backgroundColor:
-                  p24h > 0
-                    ? `rgba(0, 255, 0, ${Math.max(
-                        0.5,
-                        Math.sqrt(Math.abs(p24h / 10))
-                      )})`
-                    : `rgba(255, 0, 0, ${Math.max(
-                        0.5,
-                        Math.sqrt(Math.abs(p24h / 10))
-                      )})`,
-              }}
-            >
-              {p24h ? `${p24h.toFixed(2)}%` : ""}
-            </span>
-          </span>
-        </CellWrapper>
-        {/* <LazyRender show={isExpanded}> */}
-        {isExpanded && (
-          <MoreSection>
-            <ChartsGroup id={id} />
-            <div className={`buttons ${edit ? "edit" : undefined}`}>
+          {edit ? (
+            <div className={`buttons`}>
               <button onClick={() => onMove(true)} disabled={idx === 0}>
                 ⇧
               </button>
@@ -181,6 +151,40 @@ const PriceCell = memo(
                 ❌
               </button>
             </div>
+          ) : (
+            <span>
+              <span
+                className={`price ${
+                  isUp === 1 ? "up" : isUp === -1 ? "down" : undefined
+                }`}
+              >
+                {priceDisplay}
+              </span>
+              <span
+                className="percentage"
+                style={{
+                  backgroundColor:
+                    p24h > 0
+                      ? `rgba(0, 255, 0, ${Math.max(
+                          0.5,
+                          Math.sqrt(Math.abs(p24h / 10))
+                        )})`
+                      : `rgba(255, 0, 0, ${Math.max(
+                          0.5,
+                          Math.sqrt(Math.abs(p24h / 10))
+                        )})`,
+                }}
+              >
+                {p24h ? `${p24h.toFixed(2)}%` : ""}
+              </span>
+            </span>
+          )}
+        </CellWrapper>
+
+        {/* <LazyRender show={isExpanded}> */}
+        {isExpanded && (
+          <MoreSection>
+            <ChartsGroup id={id} />
           </MoreSection>
         )}
         {/* </LazyRender> */}

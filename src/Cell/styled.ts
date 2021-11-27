@@ -1,6 +1,8 @@
 import styled from "styled-components";
 
 export const Wrapper = styled.div`
+  position: relative;
+  overflow: hidden;
   display: inline-block;
   padding: 6px 8px;
   /* margin-top: 8px; */
@@ -23,6 +25,31 @@ export const Wrapper = styled.div`
   @media screen and (max-width: 450px) {
     width: 100%;
     /* overflow: hidden; */
+  }
+  button {
+    font-size: 0.8em;
+    height: 80%;
+  }
+  .buttons {
+    display: grid;
+    grid-auto-flow: column;
+    gap: 4px;
+    margin-left: 8px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    z-index: 10;
+    background-color: var(--background-color);
+    /* transform: translateX(calc(101%)); */
+    transition: all 0.3s ease;
+    /* &.edit {
+      transform: none;
+    } */
+    /* overflow: hidden; */
+    /* > button {
+    } */
+    /* background: red; */
   }
 `;
 
@@ -80,29 +107,6 @@ export const MoreSection = styled.div`
   display: flex;
   position: relative;
   overflow: hidden;
-  button {
-    font-size: 0.8em;
-  }
-  .buttons {
-    display: grid;
-    gap: 4px;
-    margin-left: 8px;
-    position: absolute;
-    right: 0;
-    top: 0;
-    height: 100%;
-    z-index: 10;
-    background-color: var(--background-color);
-    transform: translateX(calc(101%));
-    transition: all 0.3s ease;
-    &.edit {
-      transform: none;
-    }
-    /* overflow: hidden; */
-    /* > button {
-    } */
-    /* background: red; */
-  }
 `;
 
 export const ChartsWrapper = styled.div`
