@@ -36,6 +36,7 @@ const HeadWrapper = styled.div`
     transparent 100%
   );
   top: -1px;
+  z-index: 10;
   > div:first-child {
     flex-grow: 1;
   }
@@ -229,7 +230,7 @@ export default function App() {
   // console.log(prices)
 
   return (
-    <div className="App">
+    <div className='App'>
       {/* <Gas /> */}
       <HeadWrapper>
         <AddToken
