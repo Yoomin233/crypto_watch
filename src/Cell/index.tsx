@@ -2,6 +2,7 @@ import {
   lazy,
   memo,
   Suspense,
+  useContext,
   useEffect,
   useMemo,
   useRef,
@@ -11,16 +12,22 @@ import {
 // import ImgLoading from "./components/ImgLoading";
 import LazyRender from "../components/lazyRender";
 import Spinner from "../components/Spinner";
+import { GlobalContext } from "../context";
 import { determineFraction } from "../utils/number";
 import { CellWrapper, ChartsWrapper, MoreSection, Wrapper } from "./styled";
 
 const LazyChart = lazy(() => import("../components/chart"));
 
 const ChartsGroup = memo<any>(({ id = 1 }) => {
-  const [period, setPeriod] = useState("1D");
+  const { period: globalPeriod, setPeriod: setGlobalPeriod } =
+    useContext(GlobalContext);
+  const [period, setPeriod] = useState(globalPeriod);
+  useEffect(() => {
+    setGlobalPeriod(period);
+  }, [setGlobalPeriod, period]);
   return (
     <ChartsWrapper>
-      <div className="switch">
+      <div className='switch'>
         <span
           className={period === "1D" ? "selected" : undefined}
           onClick={() => setPeriod("1D")}
@@ -126,8 +133,8 @@ const PriceCell = memo(
         >
           <a
             href={`https://coinmarketcap.com/currencies/${slug}/`}
-            target="_blank"
-            rel="noreferrer"
+            target='_blank'
+            rel='noreferrer'
             onClick={(e) => e.stopPropagation()}
           >
             <img
@@ -147,7 +154,7 @@ const PriceCell = memo(
               >
                 ⇩
               </button>
-              <button onClick={() => onRemove(id)} className="danger">
+              <button onClick={() => onRemove(id)} className='danger'>
                 ❌
               </button>
             </div>
@@ -161,7 +168,7 @@ const PriceCell = memo(
                 {priceDisplay}
               </span>
               <span
-                className="percentage"
+                className='percentage'
                 style={{
                   backgroundColor:
                     p24h > 0

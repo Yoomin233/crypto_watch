@@ -1,6 +1,12 @@
 import axios from "axios";
 import styled from "styled-components";
 
+const instance = axios.create({
+  headers: {
+    Authorization: `Bearer 5fcb77e68787da1467daeea55f0dd01a017efdf3`,
+  },
+});
+
 const Wrapper = styled.div`
   display: flex;
   justify-content: center;
@@ -20,27 +26,21 @@ const Wrapper = styled.div`
 `;
 
 const Info = () => {
-  const exportLink = () => {
-    axios
-      .post(
-        "https://api-ssl.bitly.com/v4/shorten",
-        {
-          long_url: window.location.href,
-          // long_url:
-          //   "https://blog.iccfish.com/2021/08/04/unlock-ssh-of-xiaomi-routers/",
-        },
-        {
-          headers: {
-            Authorization: `Bearer 5fcb77e68787da1467daeea55f0dd01a017efdf3`,
-          },
-        }
-      )
+  const updateShortLink = () => {
+    instance
+      .patch("https://api-ssl.bitly.com/v4/bitlinks/bit.ly/3NOtY7t", {
+        // long_url: window.location.href,
+        // link: "https://blog.iccfish.com/2021/08/04/unlock-ssh-of-xiaomi-routers/",
+        long_url: "https://google.com",
+      })
       .then(({ data }) => {
-        // console.log(data);
         navigator.clipboard.writeText(data.link).then(() => {
           alert("Link Copied!");
         });
       });
+  };
+  const getLink = () => {
+    instance.get("https://api-ssl.bitly.com/v4/bitlinks/bit.ly/3NCMPSD");
   };
   return (
     <Wrapper className={"info"}>
@@ -61,9 +61,12 @@ const Info = () => {
         </a>
       </span>
       &nbsp;&nbsp;&nbsp;
-      <span className='export' onClick={exportLink}>
-        Export
+      <span className='export' onClick={updateShortLink}>
+        Update
       </span>
+      {/* <span className='export' onClick={getLink}>
+        <button>Get</button>
+      </span> */}
     </Wrapper>
   );
 };

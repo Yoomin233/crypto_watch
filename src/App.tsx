@@ -11,6 +11,7 @@ import useGetMapStorage from "./hooks/useGetMapStorage";
 import useSubsequentUpdate from "./hooks/useSubsequentUpdate";
 import eventEmitter from "./utils/eventEmitter";
 import Info from "./Info";
+import { GlobalContextProvider } from "./context";
 
 const Separater = "_";
 
@@ -66,11 +67,7 @@ export default function App() {
     }[]
   >(getIds);
 
-  // console.log(prices);
-
   const [expandStatus, setExpandStatus] = useState({});
-
-  // console.log(expandStatus);
 
   const ids = prices.map(({ id }) => id);
 
@@ -181,8 +178,6 @@ export default function App() {
     });
   };
 
-  // const allExpanded = expandStatus.every((v) => v);
-
   const handleExpand = (expand?: boolean) => {
     if (expand) {
       // setExpandStatus((e) => e.map((_) => 1));
@@ -196,15 +191,6 @@ export default function App() {
     url.searchParams.set("ids", ids);
     window.history.replaceState("", document.title, url);
   };
-
-  // useEffect(() => {
-  //   const idsStored = localStorage.getItem(LOCAL_ID_KEY);
-  //   const idsUrl = new URL(window.location.href).searchParams.get("ids");
-  //   // console.log(idsStored, idsUrl);
-  //   if (idsStored !== idsUrl && idsStored) {
-  //     writeURL(idsStored);
-  //   }
-  // }, []);
 
   /**
    * rewrite URL when id length / order changes
@@ -230,48 +216,51 @@ export default function App() {
   // console.log(prices)
 
   return (
-    <div className='App'>
-      {/* <Gas /> */}
-      <HeadWrapper>
-        <AddToken
-          onAdd={(id: number) => handleAddOrRemove(id, true)}
-          mapData={mapData}
-        />
-        <button onClick={() => handleExpand(false)}>{"Collapse All"}</button>
-        &nbsp;
-        <button onClick={() => setEdit(!edit)}>{edit ? "Done" : "Edit"}</button>
-        {/* &nbsp;
-        <button onClick={() => handleExpand(true)}>{"Expand"}</button> */}
-      </HeadWrapper>
-      <Wrapper>
-        {prices.map((info: any, idx) => (
-          <PriceCell
-            name={mapData[info.id]?.symbol}
-            key={info.id}
-            info={info}
-            onRemove={(id: number) => handleAddOrRemove(id)}
-            prices={prices}
-            setPrices={setPrices}
-            idx={idx}
-            expandStatus={expandStatus}
-            setExpandStatus={setExpandStatus}
-            edit={edit}
+    <GlobalContextProvider>
+      <div className='App'>
+        {/* <Gas /> */}
+        <HeadWrapper>
+          <AddToken
+            onAdd={(id: number) => handleAddOrRemove(id, true)}
+            mapData={mapData}
           />
-        ))}
-      </Wrapper>
-      <Info />
-      {/* <button onClick={() => console.log(eventEmitter)}>Log!</button> */}
-      {/* <WSStatus /> */}
-      {ids.length ? (
-        <Status
-          wsStatus={wsStatus}
-          // wsInstance={WSInstance}
-          reconnect={reconnect}
-          lastRefetch={lastRefetch}
-        />
-      ) : null}
+          <button onClick={() => handleExpand(false)}>{"Collapse All"}</button>
+          &nbsp;
+          <button onClick={() => setEdit(!edit)}>
+            {edit ? "Done" : "Edit"}
+          </button>
+          {/* &nbsp;
+        <button onClick={() => handleExpand(true)}>{"Expand"}</button> */}
+        </HeadWrapper>
+        <Wrapper>
+          {prices.map((info: any, idx) => (
+            <PriceCell
+              name={mapData[info.id]?.symbol}
+              key={info.id}
+              info={info}
+              onRemove={(id: number) => handleAddOrRemove(id)}
+              prices={prices}
+              setPrices={setPrices}
+              idx={idx}
+              expandStatus={expandStatus}
+              setExpandStatus={setExpandStatus}
+              edit={edit}
+            />
+          ))}
+        </Wrapper>
+        <Info />
+        {/* <button onClick={() => console.log(eventEmitter)}>Log!</button> */}
+        {/* <WSStatus /> */}
+        {ids.length ? (
+          <Status
+            wsStatus={wsStatus}
+            // wsInstance={WSInstance}
+            reconnect={reconnect}
+            lastRefetch={lastRefetch}
+          />
+        ) : null}
 
-      {/* <div>
+        {/* <div>
         <button onClick={() => closeWS()}>Disconnect</button>
         <button
           onClick={() => {
@@ -282,6 +271,7 @@ export default function App() {
           Connect
         </button>
       </div> */}
-    </div>
+      </div>
+    </GlobalContextProvider>
   );
 }

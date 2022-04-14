@@ -200,6 +200,10 @@ const TVChart: React.FC<{ id: number; period: string }> = ({
           return new Date(Number(time) * 1000).toLocaleString();
           // return dayjs.unix(time).toDate().toLocaleDateString(locale);
         },
+        priceFormatter: (price: number) => {
+          const decimals = price <= 0.01 ? 6 : price < 1 ? 4 : 2;
+          return price.toFixed(decimals);
+        },
       },
     });
 
