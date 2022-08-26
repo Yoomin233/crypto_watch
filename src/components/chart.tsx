@@ -1,14 +1,12 @@
-import axios from "axios";
 import {
   BusinessDay,
   createChart,
   TickMarkType,
-  UTCTimestamp,
+  UTCTimestamp
 } from "lightweight-charts";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 // import { EventEmitter } from "stream";
 import styled from "styled-components";
-import eventEmitter from "../utils/eventEmitter";
 // import useSubsequentUpdate from "../hooks/useSubsequentUpdate";
 import Spinner from "./Spinner";
 import useUpdateData from "./useUpdateData";
@@ -105,11 +103,11 @@ const TVChart: React.FC<{ id: number; period: string }> = ({
   const chartRef = useRef<any>(null);
   const seriesRef = useRef<any>(null);
 
-  const clear = () => {
-    if (chartRef.current) {
-      chartRef.current.remove();
-    }
-  };
+  // const clear = () => {
+  //   if (chartRef.current) {
+  //     chartRef.current.remove();
+  //   }
+  // };
 
   const [data, loading] = useUpdateData(id, period);
 

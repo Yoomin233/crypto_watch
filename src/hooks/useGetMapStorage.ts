@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
+import { APIHost } from "../components/useUpdateData";
 
 const useGetMapStorage = (key: string) => {
   const [mapData, setMapData] = useState<any>(() =>
@@ -11,7 +12,7 @@ const useGetMapStorage = (key: string) => {
     () =>
       axios
         .get(
-          "https://api.coinmarketcap.com/data-api/v3/map/all?cryptoAux=status&limit=10000&listing_status=active&start=1"
+          `${APIHost}/data-api/v3/map/all?cryptoAux=status&limit=10000&listing_status=active&start=1`
         )
         .then(({ data }) => {
           const storedData = data.data.cryptoCurrencyMap.reduce(

@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { APIHost } from "../components/useUpdateData";
 
 const useGetListings = (
   ids: number[],
@@ -21,7 +22,7 @@ const useGetListings = (
   const refetch = () =>
     axios
       .get(
-        `https://api.coinmarketcap.com/data-api/v3/cryptocurrency/listing?ids=${ids.join(
+        `${APIHost}/data-api/v3/cryptocurrency/listing?ids=${ids.join(
           ","
         )}&aux=ath`
       )

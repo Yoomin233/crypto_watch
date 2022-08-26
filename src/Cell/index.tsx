@@ -10,7 +10,6 @@ import {
 } from "react";
 // import styled from "styled-components";
 // import ImgLoading from "./components/ImgLoading";
-import LazyRender from "../components/lazyRender";
 import Spinner from "../components/Spinner";
 import { GlobalContext } from "../context";
 import { determineFraction } from "../utils/number";

@@ -39,9 +39,9 @@ const Info = () => {
         });
       });
   };
-  const getLink = () => {
-    instance.get("https://api-ssl.bitly.com/v4/bitlinks/bit.ly/3NCMPSD");
-  };
+  // const getLink = () => {
+  //   instance.get("https://api-ssl.bitly.com/v4/bitlinks/bit.ly/3NCMPSD");
+  // };
   return (
     <Wrapper className={"info"}>
       <span>

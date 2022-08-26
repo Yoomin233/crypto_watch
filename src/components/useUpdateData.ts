@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import eventEmitter from "../utils/eventEmitter";
 
 const TimeInterval: any = {
@@ -9,6 +9,13 @@ const TimeInterval: any = {
   "3M": 3600,
   "1Y": 86400,
 };
+
+// export const APIHost = 'https://api.coinmarketcap.com'
+
+// export const APIHost = 'http://144.34.212.145:3000/api/proxy/crypto-watch'
+
+export const APIHost = process.env.NODE_ENV === 'production' ? 'https://yoomin.us/api/proxy/crypto-watch' : 'http://144.34.212.145:3000/api/proxy/crypto-watch'
+
 
 const useUpdateData = (id: number, period: string): [any[], boolean] => {
   const [data, setData] = useState<any[]>([]);
@@ -21,7 +28,7 @@ const useUpdateData = (id: number, period: string): [any[], boolean] => {
     setLoading(true);
     return axios
       .get(
-        `https://api.coinmarketcap.com/data-api/v3/cryptocurrency/detail/chart?id=${id}&range=${period}`
+        `${APIHost}/data-api/v3/cryptocurrency/detail/chart?id=${id}&range=${period}`
       )
       .then(({ data }) => {
         const mappedData = Object.entries<any>(data.data.points).map(
