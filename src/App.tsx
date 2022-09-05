@@ -48,10 +48,13 @@ const getIds = () => {
     localStorage.getItem(LOCAL_ID_KEY) ||
     new URL(window.location.href).searchParams.get("ids") ||
     "";
+
+  const hasNewFormat = idsStored.match(/[a-z]/);
+
   return idsStored.split(ID_SEPARATOR).map((id) => ({
     id: id.includes(AMOUNT_SEPARATOR)
-      ? parseInt(id.split(AMOUNT_SEPARATOR)[0], 36)
-      : parseInt(id, 36) || 1,
+      ? parseInt(id.split(AMOUNT_SEPARATOR)[0], hasNewFormat ? 36 : 10)
+      : parseInt(id, hasNewFormat ? 36 : 10) || 1,
     amount: id.includes(AMOUNT_SEPARATOR)
       ? Number(id.split(AMOUNT_SEPARATOR)[1])
       : "",
