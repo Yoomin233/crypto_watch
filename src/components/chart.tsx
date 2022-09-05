@@ -7,7 +7,6 @@ import {
 import { useEffect, useRef } from "react";
 // import { EventEmitter } from "stream";
 import styled from "styled-components";
-// import useSubsequentUpdate from "../hooks/useSubsequentUpdate";
 import Spinner from "./Spinner";
 import useUpdateData from "./useUpdateData";
 

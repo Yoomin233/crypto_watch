@@ -12,8 +12,14 @@ import {
 // import ImgLoading from "./components/ImgLoading";
 import Spinner from "../components/Spinner";
 import { GlobalContext } from "../context";
-import { determineFraction } from "../utils/number";
-import { CellWrapper, ChartsWrapper, MoreSection, Wrapper } from "./styled";
+import { abbreviateNumber, determineFraction } from "../utils/number";
+import {
+  CellWrapper,
+  ChartsWrapper,
+  InputWrapper,
+  MoreSection,
+  Wrapper,
+} from "./styled";
 
 const LazyChart = lazy(() => import("../components/chart"));
 
@@ -83,9 +89,11 @@ const PriceCell = memo(
     setExpandStatus,
     edit,
   }: any) => {
-    const { id, p24h, price, slug, symbol } = info;
+    const { id, p24h, price, slug, symbol, amount: propsAmount } = info;
     const lastPrice = useRef(price);
     const [isUp, setIsUp] = useState<1 | 0 | -1>(0);
+
+    const [amount, setAmount] = useState(propsAmount);
 
     useEffect(() => {
       if (
@@ -104,9 +112,7 @@ const PriceCell = memo(
     }, [price]);
 
     const onMove = (isUp?: boolean) => {
-      // let temp;
       const idxOffset = isUp ? -1 : 1;
-      // if (isUp) {
       const temp = prices[idx + idxOffset];
       prices[idx + idxOffset] = prices[idx];
       prices[idx] = temp;
@@ -119,6 +125,8 @@ const PriceCell = memo(
     const priceDisplay = useMemo(() => {
       return price ? price.toFixed(determineFraction(price)) : "-";
     }, [price]);
+
+    // console.log(priceDisplay, typeof priceDisplay);
 
     return (
       <Wrapper>
@@ -140,7 +148,10 @@ const PriceCell = memo(
               src={`https://s2.coinmarketcap.com/static/img/coins/64x64/${id}.png`}
               alt={id}
             />
-            {name || symbol || "unknown"}
+            <span>
+              <span>{name || symbol || "unknown"}</span>
+              {amount > 0 && <span>Balance: {abbreviateNumber(amount)}</span>}
+            </span>
           </a>
           {edit ? (
             <div className={`buttons`}>
@@ -158,13 +169,18 @@ const PriceCell = memo(
               </button>
             </div>
           ) : (
-            <span>
+            <span className='metrics'>
               <span
                 className={`price ${
-                  isUp === 1 ? "up" : isUp === -1 ? "down" : undefined
+                  isUp === 1 ? "up" : isUp === -1 ? "down" : ""
                 }`}
               >
-                {priceDisplay}
+                {amount > 0 && !!price && (
+                  <span>${(price * amount).toFixed(2)}</span>
+                )}
+                <span>
+                  {amount > 0 && !!price && "@ "}${priceDisplay}
+                </span>
               </span>
               <span
                 className='percentage'
@@ -186,6 +202,38 @@ const PriceCell = memo(
             </span>
           )}
         </CellWrapper>
+        {isExpanded && (
+          <InputWrapper>
+            <span>Balance: </span>
+            <input
+              placeholder='input amount...'
+              type={"number"}
+              value={amount}
+              onChange={(e) => {
+                const newAmount = Number(e.target.value);
+                setAmount(newAmount);
+                const elementIndex = prices.findIndex(
+                  (token: any) => token.id === id
+                );
+                if (elementIndex >= 0) {
+                  prices[elementIndex] = {
+                    ...prices[elementIndex],
+                    amount: newAmount,
+                  };
+                  setPrices([...prices]);
+                }
+              }}
+            ></input>
+            {/* <button
+              onClick={() => {
+                // console.log(prices);
+                
+              }}
+            >
+              OK
+            </button> */}
+          </InputWrapper>
+        )}
 
         {/* <LazyRender show={isExpanded}> */}
         {isExpanded && (

@@ -15,7 +15,7 @@ export const Wrapper = styled.div`
   user-select: none;
   white-space: nowrap;
   width: 33%;
-  border-bottom: 1px solid var(--border-color);
+  /* border-bottom: 1px solid var(--border-color); */
   @media screen and (min-width: 1200px) {
     width: 25%;
   }
@@ -28,14 +28,14 @@ export const Wrapper = styled.div`
   }
   button {
     font-size: 0.8em;
-    height: 80%;
+    /* height: 80%; */
   }
   .buttons {
     display: grid;
     grid-auto-flow: column;
     gap: 4px;
     margin-left: 8px;
-    position: absolute;
+    /* position: absolute; */
     right: 0;
     top: 0;
     height: 100%;
@@ -67,11 +67,24 @@ export const CellWrapper = styled.div`
       text-overflow: ellipsis;
     }
   }
+  > span.metrics {
+    display: flex;
+    align-items: center;
+  }
   > a {
     color: inherit;
-    font-size: 1.1em;
+    font-size: 1.1rem;
     text-decoration: none;
     font-weight: bold;
+    > span {
+      display: inline-flex;
+      flex-direction: column;
+      vertical-align: middle;
+      > span:nth-child(2) {
+        font-size: 0.8rem;
+        opacity: 0.7;
+      }
+    }
   }
   img {
     width: 2rem;
@@ -80,13 +93,21 @@ export const CellWrapper = styled.div`
   }
   span.price {
     font-weight: bold;
-    font-size: 1.2em;
+    font-size: 1.1rem;
     transition: all 0.1s linear;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-end;
+    vertical-align: bottom;
     &.up {
       color: var(--up-color);
     }
     &.down {
       color: var(--down-color);
+    }
+    > span:nth-child(2) {
+      font-size: 0.8rem;
+      opacity: 0.7;
     }
   }
   span.percentage {
@@ -130,5 +151,21 @@ export const ChartsWrapper = styled.div`
   }
   img {
     width: 100%;
+  }
+`;
+
+export const InputWrapper = styled.div`
+  display: flex;
+  margin: 8px 0px 0px;
+  input {
+    border-bottom: none;
+    /* width: auto; */
+    flex-grow: 1;
+  }
+  button {
+    cursor: pointer;
+  }
+  span {
+    padding-top: 2px;
   }
 `;

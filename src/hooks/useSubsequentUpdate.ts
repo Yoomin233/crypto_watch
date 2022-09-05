@@ -7,7 +7,6 @@ const useSubsequentUpdate = (cb: any, deps: string) => {
       mounted.current = true;
       return;
     }
-    console.log("exec!");
     cb();
   }, [deps]);
 };

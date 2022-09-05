@@ -12,9 +12,7 @@ const TimeInterval: any = {
 
 // export const APIHost = 'https://api.coinmarketcap.com'
 
-// export const APIHost = 'http://144.34.212.145:3000/api/proxy/crypto-watch'
-
-export const APIHost = process.env.NODE_ENV === 'production' ? 'https://yoomin.us/api/proxy/crypto-watch' : 'http://144.34.212.145:3000/api/proxy/crypto-watch'
+export const APIHost = process.env.NODE_ENV === 'production' ? 'https://yoomin.us/api/proxy/crypto-watch' : 'https://yoomin.us/api/proxy/crypto-watch'
 
 
 const useUpdateData = (id: number, period: string): [any[], boolean] => {

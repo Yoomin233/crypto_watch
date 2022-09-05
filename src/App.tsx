@@ -1,19 +1,19 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 
 import styled from "styled-components";
-import Status from "./Footer";
 import PriceCell from "./Cell";
-// import useGetMapStorage from "./hooks/useGetMapStorage";
-// import WSStatus from "./Status";
+import Status from "./Footer";
 import AddToken from "./Add";
+import { GlobalContextProvider } from "./context";
 import useGetListings from "./hooks/useGetListings";
 import useGetMapStorage from "./hooks/useGetMapStorage";
 import useSubsequentUpdate from "./hooks/useSubsequentUpdate";
-import eventEmitter from "./utils/eventEmitter";
+import useWbSocket from "./hooks/useWebSocket";
 import Info from "./Info";
-import { GlobalContextProvider } from "./context";
+import eventEmitter from "./utils/eventEmitter";
 
-const Separater = "_";
+const ID_SEPARATOR = "_";
+const AMOUNT_SEPARATOR = "-";
 
 const LOCAL_KEY = "LOCAL_KEY";
 const LOCAL_ID_KEY = "LOCAL_ID_KEY";
@@ -48,13 +48,17 @@ const getIds = () => {
     localStorage.getItem(LOCAL_ID_KEY) ||
     new URL(window.location.href).searchParams.get("ids") ||
     "";
-  return idsStored.split(Separater).map((id) => ({
-    id: Number(id) || 1,
+  return idsStored.split(ID_SEPARATOR).map((id) => ({
+    id: id.includes(AMOUNT_SEPARATOR)
+      ? parseInt(id.split(AMOUNT_SEPARATOR)[0], 36)
+      : parseInt(id, 36) || 1,
+    amount: id.includes(AMOUNT_SEPARATOR)
+      ? Number(id.split(AMOUNT_SEPARATOR)[1])
+      : "",
   }));
 };
 
 export default function App() {
-  const [wsStatus, setWSStatus] = useState<number>(0);
   const [edit, setEdit] = useState(false);
 
   const [prices, setPrices] = useState<
@@ -64,102 +68,48 @@ export default function App() {
       p24h?: number;
       slug?: string;
       name?: string;
+      amount?: number | string;
     }[]
   >(getIds);
+
+  // console.log(prices);
 
   const [expandStatus, setExpandStatus] = useState({});
 
   const ids = prices.map(({ id }) => id);
-
-  const resubscribing = useRef(false);
+  const amounts = prices.map(({ amount }) => amount);
 
   const mapData = useGetMapStorage(LOCAL_KEY);
 
-  const WSInstance = useRef<WebSocket>();
-
   const [refetchAPI, lastRefetch] = useGetListings(ids, setPrices);
 
-  const initWS = () => {
-    let WS;
-    try {
-      WS = new WebSocket("wss://stream.coinmarketcap.com/price/latest");
-      WSInstance.current = WS;
-    } catch (e) {
-      console.log("reconnect!");
-      setTimeout(() => {
-        initWS();
-        subscribeWS(ids);
-      }, 1000);
-    }
-  };
-
-  const closeWS = () => {
-    WSInstance.current?.close();
-  };
-
-  const subscribeWS = (ids: number[]) => {
-    if (!WSInstance.current) return;
-    const WS = WSInstance.current;
-    setWSStatus(WS.readyState);
-    WS.onopen = function () {
-      console.log("ws connected!");
-      setWSStatus(WS.readyState);
-      if (resubscribing.current) {
-        resubscribing.current = false;
-      }
-      const param = {
-        method: "subscribe",
-        id: "price",
-        data: {
-          cryptoIds: ids,
-        },
-      };
-      WS.send(JSON.stringify(param));
-
-      WS.onmessage = function (res) {
-        const data = JSON.parse(res.data);
-        if (data?.d?.cr) {
-          const info = data.d.cr;
-          // console.log(info);
-          eventEmitter.emit(`WS-${info.id}`, info);
-          setPrices((prices) => {
-            return prices.map((p) => {
-              if (p.id === info.id) {
-                return {
-                  ...info,
-                  ...p,
-                  price: info.p,
-                  p24h: info.p24h,
-                };
-              }
-              return p;
-            });
+  const [wsStatus, reconnect] = useWbSocket({
+    ids,
+    onClose: () => refetchAPI(),
+    onMessage: (res: any) => {
+      const data = JSON.parse(res.data);
+      if (data?.d?.cr) {
+        const info = data.d.cr;
+        // console.log(info);
+        eventEmitter.emit(`WS-${info.id}`, info);
+        setPrices((prices) => {
+          return prices.map((p) => {
+            if (p.id === info.id) {
+              return {
+                ...info,
+                ...p,
+                price: info.p,
+                p24h: info.p24h,
+              };
+            }
+            return p;
           });
-        } else {
-          console.log(data);
-        }
-      };
-      WS.addEventListener("close", (e) => {
-        console.log("ws closed!");
-        setWSStatus(WS.readyState);
-        if (!resubscribing.current) {
-          console.log("reconnecting...");
-          refetchAPI();
-          setTimeout(() => {
-            initWS();
-            subscribeWS(ids);
-          }, 1000);
-        }
-      });
-    };
-  };
-
-  const reconnect = () => {
-    console.log("reconnect!");
-    closeWS();
-    initWS();
-    subscribeWS(ids);
-  };
+        });
+      } else {
+        console.log(data);
+      }
+    },
+  });
 
   const handleAddOrRemove = (id: number, add?: boolean) => {
     if (ids.includes(id) && add) {
@@ -180,7 +130,6 @@ export default function App() {
 
   const handleExpand = (expand?: boolean) => {
     if (expand) {
-      // setExpandStatus((e) => e.map((_) => 1));
     } else {
       setExpandStatus({});
     }
@@ -196,29 +145,34 @@ export default function App() {
    * rewrite URL when id length / order changes
    */
   useSubsequentUpdate(() => {
-    const idsString = ids.join(Separater);
+    // console.log(ids);
+    // console.log(amounts);
+    // console.log(ids, amounts);
+    const idsString = ids
+      .map((id, idx) => {
+        return (
+          id.toString(36) +
+          (amounts[idx] ? `${AMOUNT_SEPARATOR}${amounts[idx]}` : "")
+        );
+      })
+      .join(ID_SEPARATOR);
+
+    // console.log(amounts, idsStringss);
+
+    // const idsString = ids
+    //   .map((id, idx) => {
+    //     return id.toString(36);
+    //   })
+    //   .join(ID_SEPARATOR);
     writeURL(idsString);
     localStorage.setItem(LOCAL_ID_KEY, idsString);
     // if (ids.length) {
     // }
-  }, ids.join());
-
-  /**
-   * resubscribe when id length changes
-   */
-  useEffect(() => {
-    if (ids.length) {
-      resubscribing.current = true;
-      reconnect();
-    }
-  }, [ids.length]);
-
-  // console.log(prices)
+  }, ids.join() + amounts.join());
 
   return (
     <GlobalContextProvider>
       <div className='App'>
-        {/* <Gas /> */}
         <HeadWrapper>
           <AddToken
             onAdd={(id: number) => handleAddOrRemove(id, true)}
@@ -229,8 +183,37 @@ export default function App() {
           <button onClick={() => setEdit(!edit)}>
             {edit ? "Done" : "Edit"}
           </button>
-          {/* &nbsp;
-        <button onClick={() => handleExpand(true)}>{"Expand"}</button> */}
+          &nbsp;
+          <button
+            onClick={() => {
+              const newPrices = [...prices];
+              newPrices.sort((a, b) =>
+                a.amount &&
+                a.price &&
+                b.price &&
+                b.amount &&
+                typeof a.amount === "number" &&
+                typeof b.amount === "number"
+                  ? b.amount * b.price - a.amount * a.price
+                  : -Infinity
+              );
+              setPrices(newPrices);
+            }}
+          >
+            Sort by value
+          </button>
+          &nbsp;
+          <button
+            onClick={() => {
+              const newPrices = [...prices];
+              newPrices.sort((a, b) =>
+                a.price && b.price ? b.price - a.price : Infinity
+              );
+              setPrices(newPrices);
+            }}
+          >
+            Sort by price
+          </button>
         </HeadWrapper>
         <Wrapper>
           {prices.map((info: any, idx) => (
@@ -248,9 +231,24 @@ export default function App() {
             />
           ))}
         </Wrapper>
+        {prices.some((price) => !!price.amount) && (
+          <p>
+            Total Amount: $
+            <b>
+              {prices
+                .reduce((prev, next) => {
+                  return next.amount &&
+                    next.price &&
+                    typeof next.amount == "number"
+                    ? prev + next.amount * next.price
+                    : prev;
+                }, 0)
+                .toFixed(2)}
+            </b>
+          </p>
+        )}
         <Info />
-        {/* <button onClick={() => console.log(eventEmitter)}>Log!</button> */}
-        {/* <WSStatus /> */}
+
         {ids.length ? (
           <Status
             wsStatus={wsStatus}
@@ -259,18 +257,6 @@ export default function App() {
             lastRefetch={lastRefetch}
           />
         ) : null}
-
-        {/* <div>
-        <button onClick={() => closeWS()}>Disconnect</button>
-        <button
-          onClick={() => {
-            initWS();
-            subscribeWS(ids);
-          }}
-        >
-          Connect
-        </button>
-      </div> */}
       </div>
     </GlobalContextProvider>
   );
