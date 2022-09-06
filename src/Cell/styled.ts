@@ -27,7 +27,7 @@ export const Wrapper = styled.div`
     /* overflow: hidden; */
   }
   button {
-    font-size: 0.8em;
+    /* font-size: 0.8em; */
     /* height: 80%; */
   }
   .buttons {

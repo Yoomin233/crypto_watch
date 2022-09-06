@@ -11,6 +11,12 @@ import useSubsequentUpdate from "./hooks/useSubsequentUpdate";
 import useWbSocket from "./hooks/useWebSocket";
 import Info from "./Info";
 import eventEmitter from "./utils/eventEmitter";
+import {
+  IconEdit,
+  IconFold,
+  IconSortDescendingNumbers,
+  IconSortDescending,
+} from "@tabler/icons";
 
 const ID_SEPARATOR = "_";
 const AMOUNT_SEPARATOR = "-";
@@ -38,8 +44,16 @@ const HeadWrapper = styled.div`
   );
   top: -1px;
   z-index: 10;
+  @media screen and (max-width: 450px) {
+    flex-direction: column;
+    /* overflow: hidden; */
+  }
   > div:first-child {
     flex-grow: 1;
+  }
+  > p.buttons {
+    margin: 0px auto 8px;
+    white-space: nowrap;
   }
 `;
 
@@ -181,42 +195,50 @@ export default function App() {
             onAdd={(id: number) => handleAddOrRemove(id, true)}
             mapData={mapData}
           />
-          <button onClick={() => handleExpand(false)}>{"Collapse All"}</button>
-          &nbsp;
-          <button onClick={() => setEdit(!edit)}>
-            {edit ? "Done" : "Edit"}
-          </button>
-          &nbsp;
-          <button
-            onClick={() => {
-              const newPrices = [...prices];
-              newPrices.sort((a, b) =>
-                a.amount &&
-                a.price &&
-                b.price &&
-                b.amount &&
-                typeof a.amount === "number" &&
-                typeof b.amount === "number"
-                  ? b.amount * b.price - a.amount * a.price
-                  : -Infinity
-              );
-              setPrices(newPrices);
-            }}
-          >
-            Sort by value
-          </button>
-          &nbsp;
-          <button
-            onClick={() => {
-              const newPrices = [...prices];
-              newPrices.sort((a, b) =>
-                a.price && b.price ? b.price - a.price : Infinity
-              );
-              setPrices(newPrices);
-            }}
-          >
-            Sort by price
-          </button>
+          <p className='buttons'>
+            <button onClick={() => handleExpand(false)}>
+              <IconFold></IconFold>
+              Fold All
+            </button>
+            &nbsp;
+            <button onClick={() => setEdit(!edit)}>
+              <IconEdit></IconEdit>
+              {edit ? "Done" : "Edit"}
+            </button>
+            &nbsp;
+            <button
+              onClick={() => {
+                const newPrices = [...prices];
+                newPrices.sort((a, b) =>
+                  a.amount &&
+                  a.price &&
+                  b.price &&
+                  b.amount &&
+                  typeof a.amount === "number" &&
+                  typeof b.amount === "number"
+                    ? b.amount * b.price - a.amount * a.price
+                    : -Infinity
+                );
+                setPrices(newPrices);
+              }}
+            >
+              <IconSortDescendingNumbers></IconSortDescendingNumbers>
+              Sort Value
+            </button>
+            &nbsp;
+            <button
+              onClick={() => {
+                const newPrices = [...prices];
+                newPrices.sort((a, b) =>
+                  a.price && b.price ? b.price - a.price : Infinity
+                );
+                setPrices(newPrices);
+              }}
+            >
+              <IconSortDescending></IconSortDescending>
+              Sort Price
+            </button>
+          </p>
         </HeadWrapper>
         <Wrapper>
           {prices.map((info: any, idx) => (

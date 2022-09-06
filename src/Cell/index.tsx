@@ -1,3 +1,4 @@
+import { IconCaretLeft, IconCaretRight, IconTrash } from "@tabler/icons";
 import {
   lazy,
   memo,
@@ -154,18 +155,18 @@ const PriceCell = memo(
             </span>
           </a>
           {edit ? (
-            <div className={`buttons`}>
+            <div className={`buttons`} onClick={(e) => e.stopPropagation()}>
               <button onClick={() => onMove(true)} disabled={idx === 0}>
-                ⇧
+                <IconCaretLeft></IconCaretLeft>
               </button>
               <button
                 onClick={() => onMove()}
                 disabled={idx === prices.length - 1}
               >
-                ⇩
+                <IconCaretRight></IconCaretRight>
               </button>
               <button onClick={() => onRemove(id)} className='danger'>
-                ❌
+                <IconTrash></IconTrash>
               </button>
             </div>
           ) : (

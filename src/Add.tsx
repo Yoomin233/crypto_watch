@@ -13,6 +13,7 @@ const TokenList = styled.div`
 
 const Wrapper = styled.div`
   margin: 12px 0px;
+  width: 100%;
   > div {
     position: absolute;
     background: var(--background-color);
