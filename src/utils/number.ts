@@ -14,10 +14,18 @@ export const determineFraction = (num: number) => {
 
 export const abbreviateNumber = (num: number) => {
   if (num >= 1000000) {
-    return (num / 1000000).toFixed(2).replace(/0+$/, "").replace(/\.$/, "") + "M";
+    return removeTrailingZeros((num / 1000000).toFixed(2)) + "M";
   }
   if (num >= 1000) {
-    return (num / 1000).toFixed(2).replace(/0+$/, "").replace(/\.$/, "") + "K";
+    return removeTrailingZeros((num / 1000).toFixed(2)) + "K";
   }
   return num;
+};
+
+export const removeTrailingZeros = (num: number | string) => {
+  return String(num).replace(/\.?0+$/, "");
+};
+
+export const priceFormatter = (price: number) => {
+  return removeTrailingZeros(price.toFixed(determineFraction(price)));
 };

@@ -13,7 +13,12 @@ import {
 // import ImgLoading from "./components/ImgLoading";
 import Spinner from "../components/Spinner";
 import { GlobalContext } from "../context";
-import { abbreviateNumber, determineFraction } from "../utils/number";
+import {
+  abbreviateNumber,
+  determineFraction,
+  priceFormatter,
+  removeTrailingZeros,
+} from "../utils/number";
 import {
   CellWrapper,
   ChartsWrapper,
@@ -124,17 +129,14 @@ const PriceCell = memo(
     const isExpanded = !!expandStatus[id];
 
     const priceDisplay = useMemo(() => {
-      return price ? price.toFixed(determineFraction(price)) : "-";
+      return price ? priceFormatter(price) : "-";
     }, [price]);
-
-    // console.log(priceDisplay, typeof priceDisplay);
 
     return (
       <Wrapper>
         <CellWrapper
           key={id}
           onClick={() => {
-            // console.log("click!", expand);
             expandStatus[id] = !expandStatus[id];
             setExpandStatus({ ...expandStatus });
           }}
@@ -179,9 +181,7 @@ const PriceCell = memo(
                 {amount > 0 && !!price && (
                   <span>${(price * amount).toFixed(2)}</span>
                 )}
-                <span>
-                  {amount > 0 && !!price && "@ "}${priceDisplay}
-                </span>
+                <span>${priceDisplay}</span>
               </span>
               <span
                 className='percentage'
@@ -236,13 +236,11 @@ const PriceCell = memo(
           </InputWrapper>
         )}
 
-        {/* <LazyRender show={isExpanded}> */}
         {isExpanded && (
           <MoreSection>
             <ChartsGroup id={id} />
           </MoreSection>
         )}
-        {/* </LazyRender> */}
       </Wrapper>
     );
   }

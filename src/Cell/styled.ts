@@ -82,7 +82,7 @@ export const CellWrapper = styled.div`
       vertical-align: middle;
       > span:nth-child(2) {
         font-size: 0.8rem;
-        opacity: 0.7;
+        opacity: 0.5;
       }
     }
   }
@@ -107,7 +107,7 @@ export const CellWrapper = styled.div`
     }
     > span:nth-child(2) {
       font-size: 0.8rem;
-      opacity: 0.7;
+      opacity: 0.5;
     }
   }
   span.percentage {

@@ -10,23 +10,21 @@ const TimeInterval: any = {
   "1Y": 86400,
 };
 
-// export const APIHost = 'https://api.coinmarketcap.com'
-
-export const APIHost = process.env.NODE_ENV === 'production' ? 'https://yoomin.us/api/proxy/crypto-watch' : 'https://yoomin.us/api/proxy/crypto-watch'
-
+export const APIHost =
+  process.env.NODE_ENV === "production"
+    ? "https://yoomin.us"
+    : "https://yoomin.us";
 
 const useUpdateData = (id: number, period: string): [any[], boolean] => {
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-
-  //   const latestNewLine = useRef<number>(0);
 
   const getData = useCallback(() => {
     // clear();
     setLoading(true);
     return axios
       .get(
-        `${APIHost}/data-api/v3/cryptocurrency/detail/chart?id=${id}&range=${period}`
+        `${APIHost}/api/proxy/crypto-watch/data-api/v3/cryptocurrency/detail/chart?id=${id}&range=${period}`
       )
       .then(({ data }) => {
         const mappedData = Object.entries<any>(data.data.points).map(

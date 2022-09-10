@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import styled from "styled-components";
 import PriceCell from "./Cell";
@@ -17,6 +17,10 @@ import {
   IconSortDescendingNumbers,
   IconSortDescending,
 } from "@tabler/icons";
+import SaveList from "./saveList";
+import { getSearchParams } from "./utils/dom";
+import axios from "axios";
+import { APIHost } from "./components/useUpdateData";
 
 const ID_SEPARATOR = "_";
 const AMOUNT_SEPARATOR = "-";
@@ -54,25 +58,40 @@ const HeadWrapper = styled.div`
   > p.buttons {
     margin: 0px auto 8px;
     white-space: nowrap;
+    width: 100%;
+    overflow: scroll;
   }
 `;
 
+const Guide = styled.div`
+  text-align: center;
+  cursor: pointer;
+  margin: 32px auto;
+  font-weight: bold;
+`;
+
 const getIds = () => {
+  const url = new URL(window.location.href);
+
+  if (url.searchParams.get("name")) {
+    return [];
+  }
+
   const idsStored =
-    localStorage.getItem(LOCAL_ID_KEY) ||
-    new URL(window.location.href).searchParams.get("ids") ||
-    "";
+    localStorage.getItem(LOCAL_ID_KEY) || url.searchParams.get("ids") || "";
 
   const hasNewFormat = idsStored.match(/[a-z]/);
 
-  return idsStored.split(ID_SEPARATOR).map((id) => ({
-    id: id.includes(AMOUNT_SEPARATOR)
-      ? parseInt(id.split(AMOUNT_SEPARATOR)[0], hasNewFormat ? 36 : 10)
-      : parseInt(id, hasNewFormat ? 36 : 10) || 1,
-    amount: id.includes(AMOUNT_SEPARATOR)
-      ? Number(id.split(AMOUNT_SEPARATOR)[1])
-      : "",
-  }));
+  return idsStored
+    ? idsStored.split(ID_SEPARATOR).map((id) => ({
+        id: id.includes(AMOUNT_SEPARATOR)
+          ? parseInt(id.split(AMOUNT_SEPARATOR)[0], hasNewFormat ? 36 : 10)
+          : parseInt(id, hasNewFormat ? 36 : 10) || 1,
+        amount: id.includes(AMOUNT_SEPARATOR)
+          ? Number(id.split(AMOUNT_SEPARATOR)[1])
+          : "",
+      }))
+    : [];
 };
 
 export default function App() {
@@ -89,19 +108,19 @@ export default function App() {
     }[]
   >(getIds);
 
-  // console.log(prices);
+  // console.log(prices)
 
   const [expandStatus, setExpandStatus] = useState({});
 
-  const ids = prices.map(({ id }) => id);
-  const amounts = prices.map(({ amount }) => amount);
+  const idsArray = prices.map(({ id }) => id);
+  const amountsArray = prices.map(({ amount }) => amount);
 
-  const mapData = useGetMapStorage(LOCAL_KEY);
+  const cryptoListData = useGetMapStorage(LOCAL_KEY);
 
-  const [refetchAPI, lastRefetch] = useGetListings(ids, setPrices);
+  const [refetchAPI, lastRefetch] = useGetListings(idsArray, setPrices);
 
   const [wsStatus, reconnect] = useWbSocket({
-    ids,
+    ids: idsArray,
     onClose: () => refetchAPI(),
     onMessage: (res: any) => {
       const data = JSON.parse(res.data);
@@ -129,7 +148,7 @@ export default function App() {
   });
 
   const handleAddOrRemove = (id: number, add?: boolean) => {
-    if (ids.includes(id) && add) {
+    if (idsArray.includes(id) && add) {
       return;
     }
     setPrices((prices) => {
@@ -143,20 +162,30 @@ export default function App() {
         : prices.filter((price) => price.id !== id);
       return newPrices;
     });
+    setExpandStatus({
+      ...expandStatus,
+      [id]: true,
+    });
   };
 
-  const handleExpand = (expand?: boolean) => {
-    if (expand) {
-    } else {
-      setExpandStatus({});
+  // const handleCollapse = (expand?: boolean) => {
+  //   if (!expand) {
+  //     setExpandStatus({});
+  //   }
+  // };
+
+  useEffect(() => {
+    const name = getSearchParams("name");
+    if (name) {
+      axios
+        .get(`${APIHost}/api/v1/crypto-watch-name?name=${name}`)
+        .then((d) => {
+          if (d.data.data) {
+            setPrices(d.data.data);
+          }
+        });
     }
-  };
-
-  const writeURL = (ids: string) => {
-    const url = new URL(window.location.href);
-    url.searchParams.set("ids", ids);
-    window.history.replaceState("", document.title, url);
-  };
+  }, []);
 
   /**
    * rewrite URL when id length / order changes
@@ -165,27 +194,17 @@ export default function App() {
     // console.log(ids);
     // console.log(amounts);
     // console.log(ids, amounts);
-    const idsString = ids
+    const idsString = idsArray
       .map((id, idx) => {
         return (
           id.toString(36) +
-          (amounts[idx] ? `${AMOUNT_SEPARATOR}${amounts[idx]}` : "")
+          (amountsArray[idx] ? `${AMOUNT_SEPARATOR}${amountsArray[idx]}` : "")
         );
       })
       .join(ID_SEPARATOR);
-
-    // console.log(amounts, idsStringss);
-
-    // const idsString = ids
-    //   .map((id, idx) => {
-    //     return id.toString(36);
-    //   })
-    //   .join(ID_SEPARATOR);
-    writeURL(idsString);
+    // writeURL(idsString);
     localStorage.setItem(LOCAL_ID_KEY, idsString);
-    // if (ids.length) {
-    // }
-  }, ids.join() + amounts.join());
+  }, idsArray.join() + amountsArray.join());
 
   return (
     <GlobalContextProvider>
@@ -193,19 +212,9 @@ export default function App() {
         <HeadWrapper>
           <AddToken
             onAdd={(id: number) => handleAddOrRemove(id, true)}
-            mapData={mapData}
+            mapData={cryptoListData}
           />
           <p className='buttons'>
-            <button onClick={() => handleExpand(false)}>
-              <IconFold></IconFold>
-              Fold All
-            </button>
-            &nbsp;
-            <button onClick={() => setEdit(!edit)}>
-              <IconEdit></IconEdit>
-              {edit ? "Done" : "Edit"}
-            </button>
-            &nbsp;
             <button
               onClick={() => {
                 const newPrices = [...prices];
@@ -230,31 +239,55 @@ export default function App() {
               onClick={() => {
                 const newPrices = [...prices];
                 newPrices.sort((a, b) =>
-                  a.price && b.price ? b.price - a.price : Infinity
+                  a.p24h && b.p24h ? b.p24h - a.p24h : Infinity
                 );
                 setPrices(newPrices);
               }}
             >
               <IconSortDescending></IconSortDescending>
-              Sort Price
+              Sort Change
             </button>
+            &nbsp;
+            <button onClick={() => setExpandStatus({})}>
+              <IconFold></IconFold>
+              Fold All
+            </button>
+            &nbsp;
+            <button onClick={() => setEdit(!edit)}>
+              <IconEdit></IconEdit>
+              {edit ? "Done" : "Edit"}
+            </button>
+            &nbsp;
+            <SaveList prices={prices}></SaveList>
           </p>
         </HeadWrapper>
         <Wrapper>
-          {prices.map((info: any, idx) => (
-            <PriceCell
-              name={mapData[info.id]?.symbol}
-              key={info.id}
-              info={info}
-              onRemove={(id: number) => handleAddOrRemove(id)}
-              prices={prices}
-              setPrices={setPrices}
-              idx={idx}
-              expandStatus={expandStatus}
-              setExpandStatus={setExpandStatus}
-              edit={edit}
-            />
-          ))}
+          {prices.length ? (
+            prices.map((info: any, idx) => (
+              <PriceCell
+                name={cryptoListData[info.id]?.symbol}
+                key={info.id}
+                info={info}
+                onRemove={(id: number) => handleAddOrRemove(id)}
+                prices={prices}
+                setPrices={setPrices}
+                idx={idx}
+                expandStatus={expandStatus}
+                setExpandStatus={setExpandStatus}
+                edit={edit}
+              />
+            ))
+          ) : (
+            <Guide
+              onClick={() => {
+                document
+                  .querySelector<HTMLInputElement>("input.crypto-search")
+                  ?.focus();
+              }}
+            >
+              Click me to add
+            </Guide>
+          )}
         </Wrapper>
         {prices.some((price) => !!price.amount) && (
           <p>
@@ -274,7 +307,7 @@ export default function App() {
         )}
         <Info />
 
-        {ids.length ? (
+        {idsArray.length ? (
           <Status
             wsStatus={wsStatus}
             // wsInstance={WSInstance}

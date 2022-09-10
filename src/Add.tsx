@@ -50,6 +50,7 @@ const AddToken = ({ onAdd, mapData }: any) => {
         placeholder={mapArr.length ? "Try 'Bitcoin'" : "Loading..."}
         disabled={!mapArr.length}
         ref={ref}
+        className='crypto-search'
       />
       {searchRes.length ? (
         <div>

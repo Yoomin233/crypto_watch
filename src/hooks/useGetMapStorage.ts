@@ -12,7 +12,7 @@ const useGetMapStorage = (key: string) => {
     () =>
       axios
         .get(
-          `${APIHost}/data-api/v3/map/all?cryptoAux=status&limit=10000&listing_status=active&start=1`
+          `${APIHost}/api/proxy/crypto-watch/data-api/v3/map/all?cryptoAux=status&limit=10000&listing_status=active&start=1`
         )
         .then(({ data }) => {
           const storedData = data.data.cryptoCurrencyMap.reduce(

@@ -22,7 +22,7 @@ const useGetListings = (
   const refetch = () =>
     axios
       .get(
-        `${APIHost}/data-api/v3/cryptocurrency/listing?ids=${ids.join(
+        `${APIHost}/api/proxy/crypto-watch/data-api/v3/cryptocurrency/listing?ids=${ids.join(
           ","
         )}&aux=ath`
       )
