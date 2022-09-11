@@ -1,23 +1,23 @@
 ## Try it out:
 
-https://yueminhu.github.io/crypto_watch/build/?ids=1_1839_1027_7083_2010_6636_7186_1765_5426_7288_8104_11156_8119_9891_13855_5899_10030_12082_11885
+https://yueminhu.github.io/crypto_watch/build/?name=watchlist-sample
 
 ## Features:
 
 - Uses [CoinMarketCap](https://coinmarketcap.com/) Data
-- Add Crypto as you want
-- *Real-time price update* on both price number & line chart
-- URL shortner
+- Add Crypto and holdings as you want
+- *Real-time price update* on price, value and mini price chart
+- Edit & Save & Share your list with one URL
 
 ## Screenshots:
 
 ### Desktop View
 
-![alt text](https://i.imgur.com/ikPSHDK.png "Screenshot1")
+![alt text](https://i.imgur.com/csTgf6f.png "Screenshot1")
 
 ### Mobile View:
 
-![alt text](https://i.imgur.com/5gKKVK1.png "Screenshot2")
+![alt text](https://i.imgur.com/UW9qWOY.png "Screenshot2")
 
 <!--
 # Getting Started with Create React App
