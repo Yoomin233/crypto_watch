@@ -1,6 +1,6 @@
 ## Try it out:
 
-https://yueminhu.github.io/crypto_watch/build/?name=watchlist-sample
+https://yoomin233.github.io/crypto_watch/build/?name=watchlist-sample
 
 ## Features:
 
