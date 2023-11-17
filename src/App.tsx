@@ -14,8 +14,8 @@ import eventEmitter from "./utils/eventEmitter";
 import {
   IconEdit,
   IconFold,
-  IconSortDescendingNumbers,
   IconSortDescending,
+  IconSortDescendingNumbers
 } from "@tabler/icons";
 import SaveList from "./saveList";
 import { getSearchParams } from "./utils/dom";
@@ -39,6 +39,7 @@ const HeadWrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   position: sticky;
+  padding: 8px;
   /* top: 0; */
   background-image: linear-gradient(
     to bottom,
@@ -52,14 +53,17 @@ const HeadWrapper = styled.div`
     flex-direction: column;
     /* overflow: hidden; */
   }
+
   > div:first-child {
     flex-grow: 1;
   }
+
   > p.buttons {
-    margin: 0px auto 8px;
     white-space: nowrap;
     width: 100%;
     overflow: scroll;
+    padding: 4px 8px;
+    margin: 0px;
   }
 `;
 
@@ -83,13 +87,13 @@ const getIds = () => {
   const hasNewFormat = idsStored.match(/[a-z]/);
 
   return idsStored
-    ? idsStored.split(ID_SEPARATOR).map((id) => ({
+    ? idsStored.split(ID_SEPARATOR).map(id => ({
         id: id.includes(AMOUNT_SEPARATOR)
           ? parseInt(id.split(AMOUNT_SEPARATOR)[0], hasNewFormat ? 36 : 10)
           : parseInt(id, hasNewFormat ? 36 : 10) || 1,
         amount: id.includes(AMOUNT_SEPARATOR)
           ? Number(id.split(AMOUNT_SEPARATOR)[1])
-          : "",
+          : ""
       }))
     : [];
 };
@@ -124,18 +128,18 @@ export default function App() {
     onClose: () => refetchAPI(),
     onMessage: (res: any) => {
       const data = JSON.parse(res.data);
-      if (data?.d?.cr) {
-        const info = data.d.cr;
+      if (data?.d) {
+        const info = data.d;
         // console.log(info);
         eventEmitter.emit(`WS-${info.id}`, info);
-        setPrices((prices) => {
-          return prices.map((p) => {
+        setPrices(prices => {
+          return prices.map(p => {
             if (p.id === info.id) {
               return {
                 ...info,
                 ...p,
                 price: info.p,
-                p24h: info.p24h,
+                p24h: info.p24h
               };
             }
             return p;
@@ -144,27 +148,27 @@ export default function App() {
       } else {
         console.log(data);
       }
-    },
+    }
   });
 
   const handleAddOrRemove = (id: number, add?: boolean) => {
     if (idsArray.includes(id) && add) {
       return;
     }
-    setPrices((prices) => {
+    setPrices(prices => {
       const newPrices = add
         ? [
             ...prices,
             {
-              id: id,
-            },
+              id: id
+            }
           ]
-        : prices.filter((price) => price.id !== id);
+        : prices.filter(price => price.id !== id);
       return newPrices;
     });
     setExpandStatus({
       ...expandStatus,
-      [id]: true,
+      [id]: true
     });
   };
 
@@ -177,13 +181,11 @@ export default function App() {
   useEffect(() => {
     const name = getSearchParams("name");
     if (name) {
-      axios
-        .get(`${APIHost}/api/v1/crypto-watch-name?name=${name}`)
-        .then((d) => {
-          if (d.data.data) {
-            setPrices(d.data.data);
-          }
-        });
+      axios.get(`${APIHost}/api/v1/crypto-watch-name?name=${name}`).then(d => {
+        if (d.data.data) {
+          setPrices(d.data.data);
+        }
+      });
     }
   }, []);
 
@@ -208,13 +210,13 @@ export default function App() {
 
   return (
     <GlobalContextProvider>
-      <div className='App'>
+      <div className="App">
         <HeadWrapper>
           <AddToken
             onAdd={(id: number) => handleAddOrRemove(id, true)}
             mapData={cryptoListData}
           />
-          <p className='buttons'>
+          <p className="buttons">
             <button
               onClick={() => {
                 const newPrices = [...prices];
@@ -289,9 +291,9 @@ export default function App() {
             </Guide>
           )}
         </Wrapper>
-        {prices.some((price) => !!price.amount) && (
+        {prices.some(price => !!price.amount) && (
           <p>
-            Total Amount: $
+            Total Balance: $
             <b>
               {prices
                 .reduce((prev, next) => {

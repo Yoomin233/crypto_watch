@@ -50,9 +50,8 @@ const useGetListings = (
         });
       });
   useEffect(() => {
+    if (!ids.length) return;
     refetch();
-    // if (!refetch) return;
-    // console.log("call!!");
   }, [ids.length, setter]);
   return [refetch, lastRefetch];
 };

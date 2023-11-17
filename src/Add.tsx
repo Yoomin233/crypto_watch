@@ -4,6 +4,7 @@ import styled from "styled-components";
 const TokenList = styled.div`
   cursor: pointer;
   margin: 4px auto;
+
   > img {
     width: 1.5em;
     margin-right: 0.5em;
@@ -12,8 +13,8 @@ const TokenList = styled.div`
 `;
 
 const Wrapper = styled.div`
-  margin: 12px 0px;
   width: 100%;
+
   > div {
     position: absolute;
     background: var(--background-color);
@@ -23,6 +24,8 @@ const Wrapper = styled.div`
     text-align: left;
     padding-left: 8px;
     z-index: 10;
+    max-height: calc(100vw - 150px);
+    overflow: scroll;
   }
 `;
 
@@ -46,15 +49,18 @@ const AddToken = ({ onAdd, mapData }: any) => {
     <Wrapper>
       <input
         value={search}
-        onChange={(e) => setSearch(e.target.value)}
+        onChange={e => setSearch(e.target.value)}
         placeholder={mapArr.length ? "Try 'Bitcoin'" : "Loading..."}
         disabled={!mapArr.length}
         ref={ref}
-        className='crypto-search'
+        className="crypto-search"
+        style={{
+          padding: "8px"
+        }}
       />
       {searchRes.length ? (
         <div>
-          {searchRes.slice(0, 10).map((r: any) => (
+          {searchRes.slice(0, 100).map((r: any) => (
             <TokenList
               key={r.id}
               onClick={() => {

@@ -19,17 +19,19 @@ export const Wrapper = styled.div`
   @media screen and (min-width: 1200px) {
     width: 25%;
   }
-  @media screen and (min-width: 451px) and (max-width: 750px) {
+  @media screen and (min-width: 551px) and (max-width: 850px) {
     width: calc(50%);
   }
-  @media screen and (max-width: 450px) {
+  @media screen and (max-width: 550px) {
     width: 100%;
     /* overflow: hidden; */
   }
+
   button {
     /* font-size: 0.8em; */
     /* height: 80%; */
   }
+
   .buttons {
     display: grid;
     grid-auto-flow: column;
@@ -67,30 +69,36 @@ export const CellWrapper = styled.div`
       text-overflow: ellipsis;
     }
   }
+
   > span.metrics {
     display: flex;
     align-items: center;
   }
+
   > a {
     color: inherit;
     font-size: 1.1rem;
     text-decoration: none;
     font-weight: bold;
+
     > span {
       display: inline-flex;
       flex-direction: column;
       vertical-align: middle;
+
       > span:nth-child(2) {
         font-size: 0.8rem;
         opacity: 0.5;
       }
     }
   }
+
   img {
     width: 2rem;
     margin-right: 0.5em;
     vertical-align: middle;
   }
+
   span.price {
     font-weight: bold;
     font-size: 1.1rem;
@@ -99,17 +107,21 @@ export const CellWrapper = styled.div`
     flex-direction: column;
     align-items: flex-end;
     vertical-align: bottom;
+
     &.up {
       color: var(--up-color);
     }
+
     &.down {
       color: var(--down-color);
     }
+
     > span:nth-child(2) {
       font-size: 0.8rem;
       opacity: 0.5;
     }
   }
+
   span.percentage {
     padding: 4px 8px;
     border-radius: 4px;
@@ -133,15 +145,18 @@ export const MoreSection = styled.div`
 export const ChartsWrapper = styled.div`
   display: flex;
   flex-grow: 1;
+
   .switch {
     display: grid;
     margin-right: 8px;
+
     > span {
       border: 1px solid transparent;
       border-top-left-radius: 6px;
       border-bottom-left-radius: 6px;
       padding: 2px 4px;
       border-right-color: #1fe230;
+
       &.selected {
         /* color: yellow; */
         border-color: #1fe230;
@@ -149,6 +164,7 @@ export const ChartsWrapper = styled.div`
       }
     }
   }
+
   img {
     width: 100%;
   }
@@ -156,15 +172,17 @@ export const ChartsWrapper = styled.div`
 
 export const InputWrapper = styled.div`
   display: flex;
-  margin: 8px 0px 0px;
+
   input {
     border-bottom: none;
     /* width: auto; */
     flex-grow: 1;
   }
+
   button {
     cursor: pointer;
   }
+
   span {
     padding-top: 2px;
   }

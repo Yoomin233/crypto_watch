@@ -1,87 +1,79 @@
 import { useEffect, useRef, useState } from "react";
+import useDebounce from "./useDebounce";
 
 const useWbSocket = ({
   onClose,
   onMessage,
-  ids,
+  ids
 }: {
   onClose: any;
   onMessage: any;
-  ids: any;
+  ids: number[];
 }) => {
   const [wsStatus, setWSStatus] = useState<number>(0);
   const WSInstance = useRef<WebSocket>();
-  const resubscribing = useRef(false);
+  const debouncedIds = useDebounce(ids.join(","), 5000)
+    .split(",")
+    .map(Number);
+  // const resubscribing = useRef(false);
 
   useEffect(() => {
-    if (ids.length) {
-      resubscribing.current = true;
-      reconnect();
+    if (debouncedIds.length) {
+      reconnectWS().then(ws => {
+        subscribeWS(debouncedIds);
+      });
     }
-  }, [ids.length]);
-
-  const initWS = () => {
-    let WS;
-    try {
-      WS = new WebSocket("wss://stream.coinmarketcap.com/price/latest");
-      WSInstance.current = WS;
-    } catch (e) {
-      console.log("reconnect!");
-      setTimeout(() => {
-        initWS();
-        subscribeWS(ids);
-      }, 1000);
-    }
-  };
+  }, [debouncedIds.length]);
 
   const closeWS = () => {
     WSInstance.current?.close();
+  };
+
+  const reconnectWS = () => {
+    closeWS();
+    return new Promise((resolve, reject) => {
+      try {
+        console.log("connecting...");
+        WSInstance.current = new WebSocket(
+          "wss://push.coinmarketcap.com/ws?device=web&client_source=home_page"
+        );
+        WSInstance.current.addEventListener("open", e => {
+          console.log("ws opened!");
+          resolve(WSInstance.current);
+        });
+        WSInstance.current.onmessage = function(res) {
+          onMessage?.(res);
+        };
+        WSInstance.current.addEventListener("close", e => {
+          console.log("ws closed!");
+          onClose?.();
+          WSInstance.current && setWSStatus(WSInstance.current.readyState);
+        });
+        return WSInstance.current;
+      } catch (e) {
+        console.log("reconnecting...");
+        setTimeout(() => {
+          reconnectWS().then(ws => {
+            resolve(WSInstance.current);
+          });
+        }, 1000);
+      }
+    });
   };
 
   const subscribeWS = (ids: number[]) => {
     if (!WSInstance.current) return;
     const WS = WSInstance.current;
     setWSStatus(WS.readyState);
-    WS.onopen = function () {
-      console.log("ws connected!");
-      setWSStatus(WS.readyState);
-      if (resubscribing.current) {
-        resubscribing.current = false;
-      }
-      const param = {
-        method: "subscribe",
-        id: "price",
-        data: {
-          cryptoIds: ids,
-        },
-      };
-      WS.send(JSON.stringify(param));
-
-      WS.onmessage = function (res) {
-        onMessage && onMessage(res);
-      };
-      WS.addEventListener("close", (e) => {
-        console.log("ws closed!");
-        setWSStatus(WS.readyState);
-        if (!resubscribing.current) {
-          console.log("reconnecting...");
-          onClose && onClose();
-          setTimeout(() => {
-            initWS();
-            subscribeWS(ids);
-          }, 1000);
-        }
-      });
+    setWSStatus(WS.readyState);
+    const param = {
+      method: "RSUBSCRIPTION",
+      params: ["main-site@crypto_price_5s@{}@normal", ids.join(",")]
     };
+    WS.send(JSON.stringify(param));
   };
 
-  const reconnect = () => {
-    console.log("reconnect!");
-    closeWS();
-    initWS();
-    subscribeWS(ids);
-  };
-  return [wsStatus, reconnect] as const;
+  return [wsStatus, reconnectWS] as const;
 };
 
 export default useWbSocket;

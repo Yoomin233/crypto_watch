@@ -7,38 +7,28 @@ import {
   useEffect,
   useMemo,
   useRef,
-  useState,
+  useState
 } from "react";
 // import styled from "styled-components";
 // import ImgLoading from "./components/ImgLoading";
 import Spinner from "../components/Spinner";
 import { GlobalContext } from "../context";
-import {
-  abbreviateNumber,
-  determineFraction,
-  priceFormatter,
-  removeTrailingZeros,
-} from "../utils/number";
-import {
-  CellWrapper,
-  ChartsWrapper,
-  InputWrapper,
-  MoreSection,
-  Wrapper,
-} from "./styled";
+import { abbreviateNumber, priceFormatter } from "../utils/number";
+import { CellWrapper, ChartsWrapper, MoreSection, Wrapper } from "./styled";
 
 const LazyChart = lazy(() => import("../components/chart"));
 
 const ChartsGroup = memo<any>(({ id = 1 }) => {
-  const { period: globalPeriod, setPeriod: setGlobalPeriod } =
-    useContext(GlobalContext);
+  const { period: globalPeriod, setPeriod: setGlobalPeriod } = useContext(
+    GlobalContext
+  );
   const [period, setPeriod] = useState(globalPeriod);
   useEffect(() => {
     setGlobalPeriod(period);
   }, [setGlobalPeriod, period]);
   return (
     <ChartsWrapper>
-      <div className='switch'>
+      <div className="switch">
         <span
           className={period === "1D" ? "selected" : undefined}
           onClick={() => setPeriod("1D")}
@@ -93,7 +83,7 @@ const PriceCell = memo(
     idx,
     expandStatus,
     setExpandStatus,
-    edit,
+    edit
   }: any) => {
     const { id, p24h, price, slug, symbol, amount: propsAmount } = info;
     const lastPrice = useRef(price);
@@ -132,6 +122,20 @@ const PriceCell = memo(
       return price ? priceFormatter(price) : "-";
     }, [price]);
 
+    const onInput = (e: any) => {
+      if (!e) return;
+      const newAmount = Number(e.target.value);
+      setAmount(newAmount);
+      const elementIndex = prices.findIndex((token: any) => token.id === id);
+      if (elementIndex >= 0) {
+        prices[elementIndex] = {
+          ...prices[elementIndex],
+          amount: newAmount
+        };
+        setPrices([...prices]);
+      }
+    };
+
     return (
       <Wrapper>
         <CellWrapper
@@ -143,9 +147,9 @@ const PriceCell = memo(
         >
           <a
             href={`https://coinmarketcap.com/currencies/${slug}/`}
-            target='_blank'
-            rel='noreferrer'
-            onClick={(e) => e.stopPropagation()}
+            target="_blank"
+            rel="noreferrer"
+            onClick={e => e.stopPropagation()}
           >
             <img
               src={`https://s2.coinmarketcap.com/static/img/coins/64x64/${id}.png`}
@@ -157,7 +161,18 @@ const PriceCell = memo(
             </span>
           </a>
           {edit ? (
-            <div className={`buttons`} onClick={(e) => e.stopPropagation()}>
+            <div className={`buttons`} onClick={e => e.stopPropagation()}>
+              <input
+                placeholder="Balance"
+                type={"number"}
+                value={amount}
+                onChange={onInput}
+                onKeyDown={e => {
+                  if (e.key === "Enter") {
+                    onInput(e);
+                  }
+                }}
+              ></input>
               <button onClick={() => onMove(true)} disabled={idx === 0}>
                 <IconCaretLeft></IconCaretLeft>
               </button>
@@ -167,35 +182,35 @@ const PriceCell = memo(
               >
                 <IconCaretRight></IconCaretRight>
               </button>
-              <button onClick={() => onRemove(id)} className='danger'>
+              <button onClick={() => onRemove(id)} className="danger">
                 <IconTrash></IconTrash>
               </button>
             </div>
           ) : (
-            <span className='metrics'>
+            <span className="metrics">
               <span
                 className={`price ${
                   isUp === 1 ? "up" : isUp === -1 ? "down" : ""
                 }`}
               >
+                <span>${priceDisplay}</span>
                 {amount > 0 && !!price && (
                   <span>${(price * amount).toFixed(2)}</span>
                 )}
-                <span>${priceDisplay}</span>
               </span>
               <span
-                className='percentage'
+                className="percentage"
                 style={{
                   backgroundColor:
                     p24h > 0
                       ? `rgba(0, 255, 0, ${Math.max(
                           0.5,
-                          Math.sqrt(Math.abs(p24h / 10))
+                          Math.sqrt(Math.abs(p24h / 20))
                         )})`
                       : `rgba(255, 0, 0, ${Math.max(
                           0.5,
-                          Math.sqrt(Math.abs(p24h / 10))
-                        )})`,
+                          Math.sqrt(Math.abs(p24h / 20))
+                        )})`
                 }}
               >
                 {p24h ? `${p24h.toFixed(2)}%` : ""}
@@ -203,38 +218,6 @@ const PriceCell = memo(
             </span>
           )}
         </CellWrapper>
-        {isExpanded && (
-          <InputWrapper>
-            <span>Balance: </span>
-            <input
-              placeholder='input amount...'
-              type={"number"}
-              value={amount}
-              onChange={(e) => {
-                const newAmount = Number(e.target.value);
-                setAmount(newAmount);
-                const elementIndex = prices.findIndex(
-                  (token: any) => token.id === id
-                );
-                if (elementIndex >= 0) {
-                  prices[elementIndex] = {
-                    ...prices[elementIndex],
-                    amount: newAmount,
-                  };
-                  setPrices([...prices]);
-                }
-              }}
-            ></input>
-            {/* <button
-              onClick={() => {
-                // console.log(prices);
-                
-              }}
-            >
-              OK
-            </button> */}
-          </InputWrapper>
-        )}
 
         {isExpanded && (
           <MoreSection>

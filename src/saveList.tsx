@@ -10,6 +10,7 @@ const ModalWrapper = styled.div`
   input {
     color: #000;
   }
+
   form > p:last-child {
     display: flex;
     justify-content: space-between;
@@ -44,21 +45,21 @@ const SaveList: React.FC<{ prices: any }> = ({ prices }) => {
      * has id
      */
     // console.log(prices);
-    if (!name || !secret) {
-      alert("name and secret are required!");
+    if (!name) {
+      return alert("name is required!");
     }
     const data = {
       name,
       secret,
       list: prices.map((price: any) => ({
         id: price.id,
-        amount: price.amount,
-      })),
+        amount: price.amount ? price.amount : undefined
+      }))
     };
     setLoading(true);
     axios
       .post(`${APIHost}/api/v1/crypto-watch-name`, data)
-      .then((d) => {
+      .then(d => {
         //   console.log(d.data);
         if (d.data.status.code === 0) {
           writeURL({ name: data.name }, ["ids"]);
@@ -66,7 +67,7 @@ const SaveList: React.FC<{ prices: any }> = ({ prices }) => {
         }
         alert("status: " + d.data.status.code);
       })
-      .catch((e) => {
+      .catch(e => {
         alert(e.message);
       })
       .finally(() => {
@@ -87,27 +88,27 @@ const SaveList: React.FC<{ prices: any }> = ({ prices }) => {
           <form onSubmit={onClickSave}>
             <p>
               <input
-                type='text'
-                placeholder='name...'
-                name='name'
+                type="text"
+                placeholder="name..."
+                name="name"
                 value={name}
-                onChange={(e) => setName(e.target.value)}
+                onChange={e => setName(e.target.value)}
               />
             </p>
             <p>
               <input
-                type='text'
-                placeholder='secret...'
-                name='secret'
+                type="text"
+                placeholder="secret..."
+                name="secret"
                 value={secret}
-                onChange={(e) => setSecret(e.target.value)}
+                onChange={e => setSecret(e.target.value)}
               />
             </p>
             <p>
-              <button type='submit' disabled={loading}>
+              <button onClick={() => setModalShow(false)}>Cancel</button>
+              <button type="submit" disabled={loading}>
                 {loading ? <IconLoader></IconLoader> : "Save"}
               </button>
-              <button onClick={() => setModalShow(false)}>Cancel</button>
             </p>
           </form>
         </ModalWrapper>
