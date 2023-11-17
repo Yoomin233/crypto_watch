@@ -1,10 +1,11 @@
-import { IconDeviceFloppy, IconLoader } from "@tabler/icons";
+import { IconDeviceFloppy } from "@tabler/icons";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import Modal from "./components/modal";
 import { APIHost } from "./components/useUpdateData";
 import { getSearchParams, writeURL } from "./utils/dom";
+import Spinner from "./components/Spinner";
 
 const ModalWrapper = styled.div`
   input {
@@ -107,7 +108,7 @@ const SaveList: React.FC<{ prices: any }> = ({ prices }) => {
             <p>
               <button onClick={() => setModalShow(false)}>Cancel</button>
               <button type="submit" disabled={loading}>
-                {loading ? <IconLoader></IconLoader> : "Save"}
+                {loading ? <Spinner></Spinner> : "Save"}
               </button>
             </p>
           </form>
