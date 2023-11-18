@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import useDebounce from "./useDebounce";
+import usePageFocus from "./usePageFocus";
 
 const useWbSocket = ({
   onClose,
@@ -14,22 +15,27 @@ const useWbSocket = ({
   const WSInstance = useRef<WebSocket>();
   const debouncedIds = useDebounce(ids.join(","), 5000)
     .split(",")
+    .filter(Boolean)
     .map(Number);
   // const resubscribing = useRef(false);
 
+  // console.log(ids, debouncedIds);
+
+  const connectAndSubscribe = () => {
+    connectWS().then(ws => {
+      subscribeWS(debouncedIds);
+    });
+  };
+
   useEffect(() => {
-    if (debouncedIds.length) {
-      reconnectWS().then(ws => {
-        subscribeWS(debouncedIds);
-      });
-    }
+    debouncedIds.length && connectAndSubscribe();
   }, [debouncedIds.length]);
 
   const closeWS = () => {
     WSInstance.current?.close();
   };
 
-  const reconnectWS = () => {
+  const connectWS = () => {
     closeWS();
     return new Promise((resolve, reject) => {
       try {
@@ -48,12 +54,17 @@ const useWbSocket = ({
           console.log("ws closed!");
           onClose?.();
           WSInstance.current && setWSStatus(WSInstance.current.readyState);
+          setTimeout(() => {
+            connectAndSubscribe();
+          }, 3000);
         });
+        // @ts-ignore
+        window.wsss = WSInstance.current;
         return WSInstance.current;
       } catch (e) {
         console.log("reconnecting...");
         setTimeout(() => {
-          reconnectWS().then(ws => {
+          connectWS().then(ws => {
             resolve(WSInstance.current);
           });
         }, 1000);
@@ -65,7 +76,6 @@ const useWbSocket = ({
     if (!WSInstance.current) return;
     const WS = WSInstance.current;
     setWSStatus(WS.readyState);
-    setWSStatus(WS.readyState);
     const param = {
       method: "RSUBSCRIPTION",
       params: ["main-site@crypto_price_5s@{}@normal", ids.join(",")]
@@ -73,7 +83,13 @@ const useWbSocket = ({
     WS.send(JSON.stringify(param));
   };
 
-  return [wsStatus, reconnectWS] as const;
+  usePageFocus(isFocused => {
+    if (isFocused && WSInstance.current?.readyState === 3) {
+      connectAndSubscribe();
+    }
+  });
+
+  return [wsStatus, connectAndSubscribe] as const;
 };
 
 export default useWbSocket;

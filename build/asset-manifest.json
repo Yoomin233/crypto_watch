@@ -1,9 +1,9 @@
 {
   "files": {
     "main.css": "/crypto_watch/build/static/css/main.ef3b7b1a.chunk.css",
-    "main.js": "/crypto_watch/build/static/js/main.65966c80.chunk.js",
+    "main.js": "/crypto_watch/build/static/js/main.38de93c6.chunk.js",
     "main.css.map": "/crypto_watch/build/static/css/main.ef3b7b1a.chunk.css.map",
-    "main.js.map": "/crypto_watch/build/static/js/main.65966c80.chunk.js.map",
+    "main.js.map": "/crypto_watch/build/static/js/main.38de93c6.chunk.js.map",
     "runtime-main.js": "/crypto_watch/build/static/js/runtime-main.a933a23d.js",
     "runtime-main.js.map": "/crypto_watch/build/static/js/runtime-main.a933a23d.js.map",
     "static/js/2.158ac422.chunk.js": "/crypto_watch/build/static/js/2.158ac422.chunk.js",
@@ -22,6 +22,6 @@
     "static/js/runtime-main.a933a23d.js",
     "static/js/2.158ac422.chunk.js",
     "static/css/main.ef3b7b1a.chunk.css",
-    "static/js/main.65966c80.chunk.js"
+    "static/js/main.38de93c6.chunk.js"
   ]
 }

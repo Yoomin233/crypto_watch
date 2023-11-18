@@ -193,9 +193,6 @@ export default function App() {
    * rewrite URL when id length / order changes
    */
   useSubsequentUpdate(() => {
-    // console.log(ids);
-    // console.log(amounts);
-    // console.log(ids, amounts);
     const idsString = idsArray
       .map((id, idx) => {
         return (
