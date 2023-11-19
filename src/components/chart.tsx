@@ -1,10 +1,5 @@
-import {
-  BusinessDay,
-  createChart,
-  TickMarkType,
-  UTCTimestamp
-} from "lightweight-charts";
-import { useEffect, useRef } from "react";
+import {BusinessDay, createChart, TickMarkType, UTCTimestamp} from "lightweight-charts";
+import {useEffect, useRef} from "react";
 // import { EventEmitter } from "stream";
 import styled from "styled-components";
 import Spinner from "./Spinner";
@@ -17,28 +12,28 @@ var darkTheme = {
     layout: {
       backgroundColor: "transparent",
       lineColor: "#2B2B43",
-      textColor: "#D9D9D9",
+      textColor: "#D9D9D9"
     },
     watermark: {
-      color: "rgba(0, 0, 0, 0)",
+      color: "rgba(0, 0, 0, 0)"
     },
     crosshair: {
-      color: "#758696",
+      color: "#758696"
     },
     grid: {
       vertLines: {
-        color: "transparent",
+        color: "transparent"
       },
       horzLines: {
-        color: "transparent",
-      },
-    },
+        color: "transparent"
+      }
+    }
   },
   series: {
     topColor: "rgba(32, 226, 47, 0.56)",
     bottomColor: "rgba(32, 226, 47, 0.04)",
-    lineColor: "rgba(32, 226, 47, 1)",
-  },
+    lineColor: "rgba(32, 226, 47, 1)"
+  }
 };
 
 const lightTheme = {
@@ -46,30 +41,30 @@ const lightTheme = {
     layout: {
       backgroundColor: "#FFFFFF",
       lineColor: "#2B2B43",
-      textColor: "#191919",
+      textColor: "#191919"
     },
     watermark: {
-      color: "rgba(0, 0, 0, 0)",
+      color: "rgba(0, 0, 0, 0)"
     },
     grid: {
       vertLines: {
-        visible: false,
+        visible: false
       },
       horzLines: {
-        color: "#f0f3fa",
-      },
-    },
+        color: "#f0f3fa"
+      }
+    }
   },
   series: {
     topColor: "rgba(33, 150, 243, 0.56)",
     bottomColor: "rgba(33, 150, 243, 0.04)",
-    lineColor: "rgba(33, 150, 243, 1)",
-  },
+    lineColor: "rgba(33, 150, 243, 1)"
+  }
 };
 
 var themesData: any = {
   Dark: darkTheme,
-  Light: lightTheme,
+  Light: lightTheme
 };
 
 const TVChartWrapper = styled.div`
@@ -81,11 +76,13 @@ const Wrapper = styled.div`
   width: 100%;
   height: 100%;
   position: relative;
+
   &.loading {
     div.tv-lightweight-charts {
-      filter: blur(4px);
+      filter: brightness(0.5);
     }
   }
+
   > span {
     position: absolute;
     top: 0;
@@ -95,7 +92,7 @@ const Wrapper = styled.div`
 
 const TVChart: React.FC<{ id: number; period: string }> = ({
   id = 1,
-  period = "1D",
+  period = "1D"
 }) => {
   const domRef = useRef<HTMLDivElement>(null);
 
@@ -170,10 +167,10 @@ const TVChart: React.FC<{ id: number; period: string }> = ({
       handleScale: {
         mouseWheel: false,
         pinch: false,
-        axisPressedMouseMove: false,
+        axisPressedMouseMove: false
       },
       rightPriceScale: {
-        borderVisible: false,
+        borderVisible: false
       },
       timeScale: {
         borderVisible: false,
@@ -189,7 +186,7 @@ const TVChart: React.FC<{ id: number; period: string }> = ({
 
           //   console.log(time, tickMarkType);
           //   return "333";
-        },
+        }
       },
       localization: {
         timeFormatter: (time: BusinessDay | UTCTimestamp) => {
@@ -200,8 +197,8 @@ const TVChart: React.FC<{ id: number; period: string }> = ({
         priceFormatter: (price: number) => {
           const decimals = price <= 0.01 ? 6 : price < 1 ? 4 : 2;
           return price.toFixed(decimals);
-        },
-      },
+        }
+      }
     });
 
     chartRef.current = chart;
@@ -210,7 +207,7 @@ const TVChart: React.FC<{ id: number; period: string }> = ({
       topColor: "rgba(33, 150, 243, 0.56)",
       bottomColor: "rgba(33, 150, 243, 0.04)",
       lineColor: "rgba(33, 150, 243, 1)",
-      lineWidth: 1,
+      lineWidth: 1
     });
 
     chart.applyOptions(themesData["Dark"].chart);

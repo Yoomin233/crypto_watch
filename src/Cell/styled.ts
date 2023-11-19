@@ -121,56 +121,42 @@ export const CellWrapper = styled.div`
 `;
 
 export const MoreSection = styled.div`
-  padding-top: 8px;
   /* border-bottom: 1px solid var(--border-color); */
   justify-content: space-between;
   display: flex;
   position: relative;
   overflow: hidden;
+  height: 300px;
 `;
 
 export const ChartsWrapper = styled.div`
   display: flex;
   flex-grow: 1;
+  flex-direction: column;
 
   .switch {
-    display: grid;
+    display: flex;
     margin-right: 8px;
 
     > span {
       border: 1px solid transparent;
-      border-top-left-radius: 6px;
-      border-bottom-left-radius: 6px;
+      flex-grow: 1;
+      border-radius: 6px;
       padding: 2px 4px;
-      border-right-color: #1fe230;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
 
       &.selected {
         /* color: yellow; */
         border-color: #1fe230;
-        border-right-color: transparent;
+        top: transparent;
       }
     }
   }
 
   img {
     width: 100%;
-  }
-`;
-
-export const InputWrapper = styled.div`
-  display: flex;
-
-  input {
-    border-bottom: none;
-    /* width: auto; */
-    flex-grow: 1;
-  }
-
-  button {
-    cursor: pointer;
-  }
-
-  span {
-    padding-top: 2px;
   }
 `;

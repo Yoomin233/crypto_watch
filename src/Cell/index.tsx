@@ -15,10 +15,14 @@ import Spinner from "../components/Spinner";
 import { GlobalContext } from "../context";
 import { abbreviateNumber, priceFormatter } from "../utils/number";
 import { CellWrapper, ChartsWrapper, MoreSection, Wrapper } from "./styled";
+import Modal from "../components/modal";
 
 const LazyChart = lazy(() => import("../components/chart"));
 
-const ChartsGroup = memo<any>(({ id = 1 }) => {
+const ChartsGroup = memo<{
+  id?: number;
+  crypto?: string;
+}>(({ id = 1, crypto }) => {
   const { period: globalPeriod, setPeriod: setGlobalPeriod } = useContext(
     GlobalContext
   );
@@ -28,6 +32,16 @@ const ChartsGroup = memo<any>(({ id = 1 }) => {
   }, [setGlobalPeriod, period]);
   return (
     <ChartsWrapper>
+      <div
+        style={{
+          marginBottom: 8,
+          textAlign: "center",
+          fontWeight: "bold"
+        }}
+      >
+        {crypto} Chart
+      </div>
+
       <div className="switch">
         <span
           className={period === "1D" ? "selected" : undefined}
@@ -48,16 +62,16 @@ const ChartsGroup = memo<any>(({ id = 1 }) => {
           1M
         </span>
         <span
-          className={period === "3M" ? "selected" : undefined}
-          onClick={() => setPeriod("3M")}
-        >
-          3M
-        </span>
-        <span
           className={period === "1Y" ? "selected" : undefined}
           onClick={() => setPeriod("1Y")}
         >
           1Y
+        </span>
+        <span
+          className={period === "ALL" ? "selected" : undefined}
+          onClick={() => setPeriod("ALL")}
+        >
+          ALL
         </span>
       </div>
       <Charts id={id} period={period} />
@@ -219,11 +233,17 @@ const PriceCell = memo(
           )}
         </CellWrapper>
 
-        {isExpanded && (
+        <Modal
+          show={isExpanded}
+          onClose={() => {
+            expandStatus[id] = false;
+            setExpandStatus({ ...expandStatus });
+          }}
+        >
           <MoreSection>
-            <ChartsGroup id={id} />
+            <ChartsGroup id={id} crypto={name || symbol} />
           </MoreSection>
-        )}
+        </Modal>
       </Wrapper>
     );
   }

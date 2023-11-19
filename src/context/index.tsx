@@ -1,13 +1,13 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 
-type Periods = "1D" | "7D" | "1M" | "3M" | "1Y";
+type Periods = "1D" | "7D" | "1M" | "1Y" | "ALL";
 
 export const GlobalContext = React.createContext<{
   period: Periods;
   setPeriod: React.Dispatch<React.SetStateAction<Periods>>;
 }>({
   period: "1D",
-  setPeriod: () => void 0,
+  setPeriod: () => void 0
 });
 
 export const GlobalContextProvider: React.FC = ({ children }) => {
@@ -16,7 +16,7 @@ export const GlobalContextProvider: React.FC = ({ children }) => {
     <GlobalContext.Provider
       value={{
         period,
-        setPeriod,
+        setPeriod
       }}
     >
       {children}

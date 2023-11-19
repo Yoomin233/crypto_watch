@@ -6,8 +6,8 @@ const TimeInterval: any = {
   "1D": 300,
   "7D": 300,
   "1M": 3600,
-  "3M": 3600,
   "1Y": 86400,
+  ALL: 86400
 };
 
 export const APIHost =
@@ -30,13 +30,13 @@ const useUpdateData = (id: number, period: string): [any[], boolean] => {
         const mappedData = Object.entries<any>(data.data.points).map(
           ([key, value]) => ({
             time: Number(key),
-            value: value.v[0],
+            value: value.v[0]
           })
         );
         setData(mappedData);
         return mappedData;
       })
-      .catch((e) => {
+      .catch(e => {
         return [];
       })
       .finally(() => {
@@ -49,7 +49,7 @@ const useUpdateData = (id: number, period: string): [any[], boolean] => {
   useEffect(() => {
     getData();
     const subscriber = eventEmitter.subscribe(`WS-${id}`, (wsData: any) => {
-      setData((data) => {
+      setData(data => {
         if (!data.length) return data;
         const lastData = data[data.length - 1];
         const lastDataTime = lastData.time * 1000;
@@ -62,8 +62,8 @@ const useUpdateData = (id: number, period: string): [any[], boolean] => {
             ...data,
             {
               time: Math.floor(Number(new Date()) / 1000),
-              value: wsData.p,
-            },
+              value: wsData.p
+            }
           ];
         } else {
           // lastData.time = now

@@ -18,6 +18,9 @@ const Wrapper = styled.div`
     margin: auto;
     border-radius: 16px;
     background: var(--gray-color);
+    @media screen and (max-width: 500px) {
+      width: 96vw;
+    }
   }
 `;
 
