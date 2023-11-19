@@ -31,7 +31,19 @@ const LOCAL_ID_KEY = "LOCAL_ID_KEY";
 const Wrapper = styled.div`
   text-align: left;
   padding: 0px 8px;
-  /* padding-top: 8px; */
+  display: grid;
+  --columns-count: 3;
+  grid-template-columns: repeat(var(--columns-count), 1fr);
+  gap: 8px;
+  @media screen and (min-width: 1200px) {
+    --columns-count: 4;
+  }
+  @media screen and (min-width: 551px) and (max-width: 850px) {
+    --columns-count: 2;
+  }
+  @media screen and (max-width: 550px) {
+    --columns-count: 1;
+  }
 `;
 
 const HeadWrapper = styled.div`
@@ -158,18 +170,18 @@ export default function App() {
     setPrices(prices => {
       const newPrices = add
         ? [
-            ...prices,
             {
               id: id
-            }
+            },
+            ...prices
           ]
         : prices.filter(price => price.id !== id);
       return newPrices;
     });
-    setExpandStatus({
-      ...expandStatus,
-      [id]: true
-    });
+    // setExpandStatus({
+    //   ...expandStatus,
+    //   [id]: false,
+    // });
   };
 
   // const handleCollapse = (expand?: boolean) => {
@@ -209,10 +221,6 @@ export default function App() {
     <GlobalContextProvider>
       <div className="App">
         <HeadWrapper>
-          <AddToken
-            onAdd={(id: number) => handleAddOrRemove(id, true)}
-            mapData={cryptoListData}
-          />
           <p className="buttons">
             <button
               onClick={() => {
@@ -261,32 +269,26 @@ export default function App() {
           </p>
         </HeadWrapper>
         <Wrapper>
-          {prices.length ? (
-            prices.map((info: any, idx) => (
-              <PriceCell
-                name={cryptoListData[info.id]?.symbol}
-                key={info.id}
-                info={info}
-                onRemove={(id: number) => handleAddOrRemove(id)}
-                prices={prices}
-                setPrices={setPrices}
-                idx={idx}
-                expandStatus={expandStatus}
-                setExpandStatus={setExpandStatus}
-                edit={edit}
-              />
-            ))
-          ) : (
-            <Guide
-              onClick={() => {
-                document
-                  .querySelector<HTMLInputElement>("input.crypto-search")
-                  ?.focus();
-              }}
-            >
-              Click me to add
-            </Guide>
-          )}
+          {prices.length
+            ? prices.map((info: any, idx) => (
+                <PriceCell
+                  name={cryptoListData[info.id]?.symbol}
+                  key={info.id}
+                  info={info}
+                  onRemove={(id: number) => handleAddOrRemove(id)}
+                  prices={prices}
+                  setPrices={setPrices}
+                  idx={idx}
+                  expandStatus={expandStatus}
+                  setExpandStatus={setExpandStatus}
+                  edit={edit}
+                />
+              ))
+            : null}
+          <AddToken
+            onAdd={(id: number) => handleAddOrRemove(id, true)}
+            mapData={cryptoListData}
+          />
         </Wrapper>
         {prices.some(price => !!price.amount) && (
           <p>

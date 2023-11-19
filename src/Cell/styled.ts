@@ -4,7 +4,6 @@ export const Wrapper = styled.div`
   position: relative;
   overflow: hidden;
   display: inline-block;
-  padding: 6px 8px;
   /* margin-top: 8px; */
   vertical-align: top;
   /* display: inline-block; */
@@ -14,18 +13,6 @@ export const Wrapper = styled.div`
   box-sizing: border-box;
   user-select: none;
   white-space: nowrap;
-  width: 33%;
-  /* border-bottom: 1px solid var(--border-color); */
-  @media screen and (min-width: 1200px) {
-    width: 25%;
-  }
-  @media screen and (min-width: 551px) and (max-width: 850px) {
-    width: calc(50%);
-  }
-  @media screen and (max-width: 550px) {
-    width: 100%;
-    /* overflow: hidden; */
-  }
 
   button {
     /* font-size: 0.8em; */

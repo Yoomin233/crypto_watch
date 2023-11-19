@@ -16,6 +16,7 @@
         --background-color: #fff;
         --text-color: #000;
         --border-color: rgb(219, 217, 217);
+
     }
 }
 
@@ -34,6 +35,7 @@ body {
     color: var(--text-color);
     --up-color: #16c784;
     --down-color: #ea3943;
+    --gray-color: #101010;
 }
 
 input {
@@ -102,4 +104,4 @@ button.danger {
 } */
 
 
-/*# sourceMappingURL=main.ef3b7b1a.chunk.css.map*/
+/*# sourceMappingURL=main.7eaf5af4.chunk.css.map*/

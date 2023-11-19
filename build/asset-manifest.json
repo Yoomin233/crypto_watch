@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/crypto_watch/build/static/css/main.ef3b7b1a.chunk.css",
-    "main.js": "/crypto_watch/build/static/js/main.38de93c6.chunk.js",
-    "main.css.map": "/crypto_watch/build/static/css/main.ef3b7b1a.chunk.css.map",
-    "main.js.map": "/crypto_watch/build/static/js/main.38de93c6.chunk.js.map",
+    "main.css": "/crypto_watch/build/static/css/main.7eaf5af4.chunk.css",
+    "main.js": "/crypto_watch/build/static/js/main.3bd66679.chunk.js",
+    "main.css.map": "/crypto_watch/build/static/css/main.7eaf5af4.chunk.css.map",
+    "main.js.map": "/crypto_watch/build/static/js/main.3bd66679.chunk.js.map",
     "runtime-main.js": "/crypto_watch/build/static/js/runtime-main.a933a23d.js",
     "runtime-main.js.map": "/crypto_watch/build/static/js/runtime-main.a933a23d.js.map",
-    "static/js/2.158ac422.chunk.js": "/crypto_watch/build/static/js/2.158ac422.chunk.js",
-    "static/js/2.158ac422.chunk.js.map": "/crypto_watch/build/static/js/2.158ac422.chunk.js.map",
+    "static/js/2.582119ba.chunk.js": "/crypto_watch/build/static/js/2.582119ba.chunk.js",
+    "static/js/2.582119ba.chunk.js.map": "/crypto_watch/build/static/js/2.582119ba.chunk.js.map",
     "static/js/3.0c8352d8.chunk.js": "/crypto_watch/build/static/js/3.0c8352d8.chunk.js",
     "static/js/3.0c8352d8.chunk.js.map": "/crypto_watch/build/static/js/3.0c8352d8.chunk.js.map",
     "static/js/4.03322300.chunk.js": "/crypto_watch/build/static/js/4.03322300.chunk.js",
@@ -15,13 +15,13 @@
     "static/js/5.cd399721.chunk.js": "/crypto_watch/build/static/js/5.cd399721.chunk.js",
     "static/js/5.cd399721.chunk.js.map": "/crypto_watch/build/static/js/5.cd399721.chunk.js.map",
     "index.html": "/crypto_watch/build/index.html",
-    "static/js/2.158ac422.chunk.js.LICENSE.txt": "/crypto_watch/build/static/js/2.158ac422.chunk.js.LICENSE.txt",
+    "static/js/2.582119ba.chunk.js.LICENSE.txt": "/crypto_watch/build/static/js/2.582119ba.chunk.js.LICENSE.txt",
     "static/js/4.03322300.chunk.js.LICENSE.txt": "/crypto_watch/build/static/js/4.03322300.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.a933a23d.js",
-    "static/js/2.158ac422.chunk.js",
-    "static/css/main.ef3b7b1a.chunk.css",
-    "static/js/main.38de93c6.chunk.js"
+    "static/js/2.582119ba.chunk.js",
+    "static/css/main.7eaf5af4.chunk.css",
+    "static/js/main.3bd66679.chunk.js"
   ]
 }

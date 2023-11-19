@@ -8,10 +8,6 @@ import { getSearchParams, writeURL } from "./utils/dom";
 import Spinner from "./components/Spinner";
 
 const ModalWrapper = styled.div`
-  input {
-    color: #000;
-  }
-
   form > p:last-child {
     display: flex;
     justify-content: space-between;

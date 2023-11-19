@@ -24,40 +24,52 @@ const useWbSocket = ({
   const connectAndSubscribe = () => {
     connectWS().then(ws => {
       subscribeWS(debouncedIds);
+      ws.onmessage = function(res) {
+        onMessage?.(res);
+      };
+      ws.onclose = e => {
+        console.log("ws closed!");
+        onClose?.();
+        setWSStatus(ws.readyState);
+        setTimeout(() => {
+          connectAndSubscribe();
+        }, 3000);
+      };
     });
   };
 
   useEffect(() => {
-    debouncedIds.length && connectAndSubscribe();
+    if (debouncedIds.length) {
+      closeWS();
+      connectAndSubscribe();
+    }
   }, [debouncedIds.length]);
 
+  /**
+   * close websocket connection actively
+   */
   const closeWS = () => {
-    WSInstance.current?.close();
+    if (!WSInstance.current) return;
+    // @ts-ignore
+    if (WSInstance.current?.onclose) {
+      WSInstance.current.onclose = null;
+    }
+    WSInstance.current.close();
   };
 
-  const connectWS = () => {
-    closeWS();
+  const connectWS: () => Promise<WebSocket> = () => {
     return new Promise((resolve, reject) => {
       try {
         console.log("connecting...");
-        WSInstance.current = new WebSocket(
+        const ws = new WebSocket(
           "wss://push.coinmarketcap.com/ws?device=web&client_source=home_page"
         );
+        WSInstance.current = ws;
         WSInstance.current.addEventListener("open", e => {
           console.log("ws opened!");
-          resolve(WSInstance.current);
+          resolve(ws);
         });
-        WSInstance.current.onmessage = function(res) {
-          onMessage?.(res);
-        };
-        WSInstance.current.addEventListener("close", e => {
-          console.log("ws closed!");
-          onClose?.();
-          WSInstance.current && setWSStatus(WSInstance.current.readyState);
-          setTimeout(() => {
-            connectAndSubscribe();
-          }, 3000);
-        });
+
         // @ts-ignore
         window.wsss = WSInstance.current;
         return WSInstance.current;
@@ -65,9 +77,9 @@ const useWbSocket = ({
         console.log("reconnecting...");
         setTimeout(() => {
           connectWS().then(ws => {
-            resolve(WSInstance.current);
+            resolve(ws);
           });
-        }, 1000);
+        }, 3000);
       }
     });
   };

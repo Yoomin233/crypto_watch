@@ -10,21 +10,32 @@ const Wrapper = styled.div`
   background: rgba(0, 0, 0, 0.8);
   z-index: 10;
   display: flex;
+
   > div {
     width: 80vw;
     max-width: 500px;
     padding: 24px;
-    background: rgba(255, 255, 255, 0.8);
     margin: auto;
     border-radius: 16px;
+    background: var(--gray-color);
   }
 `;
 
-const Modal: React.FC<{ show: boolean }> = ({ children, show }) => {
+const Modal: React.FC<{ show: boolean; onClose?: () => void }> = ({
+  children,
+  show,
+  onClose
+}) => {
   return show
     ? createPortal(
-        <Wrapper>
-          <div>{children}</div>
+        <Wrapper onClick={onClose}>
+          <div
+            onClick={e => {
+              e.stopPropagation();
+            }}
+          >
+            {children}
+          </div>
         </Wrapper>,
         document.body
       )

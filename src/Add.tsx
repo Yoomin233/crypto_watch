@@ -1,5 +1,7 @@
 import { useRef, useState } from "react";
 import styled from "styled-components";
+import { IconPlus } from "@tabler/icons";
+import Modal from "./components/modal";
 
 const TokenList = styled.div`
   cursor: pointer;
@@ -12,20 +14,28 @@ const TokenList = styled.div`
   }
 `;
 
-const Wrapper = styled.div`
+const Result = styled.div`
   width: 100%;
+  border-radius: 4px;
+  text-align: left;
+  padding-left: 8px;
+  z-index: 10;
+  max-height: calc(100vh - 150px);
+  overflow: scroll;
+`;
 
-  > div {
-    position: absolute;
-    background: var(--background-color);
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    width: 100%;
-    text-align: left;
-    padding-left: 8px;
-    z-index: 10;
-    max-height: calc(100vw - 150px);
-    overflow: scroll;
+const AddBtn = styled.div`
+  border-radius: 8px;
+  background: var(--gray-color);
+  text-align: center;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+
+  &:hover {
+    filter: brightness(1.1);
   }
 `;
 
@@ -33,6 +43,7 @@ const AddToken = ({ onAdd, mapData }: any) => {
   const [search, setSearch] = useState("");
   const mapArr = Object.values(mapData);
   const ref = useRef<HTMLInputElement>(null);
+  const [open, setOpen] = useState(false);
 
   // useEffect(() => {
   //   ref.current?.focus();
@@ -46,41 +57,58 @@ const AddToken = ({ onAdd, mapData }: any) => {
       )
     : [];
   return (
-    <Wrapper>
-      <input
-        value={search}
-        onChange={e => setSearch(e.target.value)}
-        placeholder={mapArr.length ? "Try 'Bitcoin'" : "Loading..."}
-        disabled={!mapArr.length}
-        ref={ref}
-        className="crypto-search"
-        style={{
-          padding: "8px"
+    <>
+      <AddBtn
+        onClick={() => {
+          setOpen(true);
+          setTimeout(() => {
+            ref.current?.focus();
+          }, 500);
         }}
-      />
-      {searchRes.length ? (
-        <div>
-          {searchRes.slice(0, 100).map((r: any) => (
-            <TokenList
-              key={r.id}
-              onClick={() => {
-                onAdd(r.id);
-                setSearch("");
-                setTimeout(() => {
-                  ref.current?.focus();
-                }, 500);
-              }}
-            >
-              <img
-                src={`https://s2.coinmarketcap.com/static/img/coins/64x64/${r.id}.png`}
-                alt={r.id}
-              />
-              {r.name}
-            </TokenList>
-          ))}
-        </div>
-      ) : null}
-    </Wrapper>
+      >
+        <IconPlus></IconPlus>
+      </AddBtn>
+      <Modal
+        show={open}
+        onClose={() => {
+          setOpen(false);
+          setSearch("");
+        }}
+      >
+        <input
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          placeholder={mapArr.length ? "Try 'Bitcoin'" : "Loading..."}
+          disabled={!mapArr.length}
+          ref={ref}
+          className="crypto-search"
+          style={{
+            padding: "8px"
+          }}
+        />
+        {searchRes.length ? (
+          <Result className={"result"}>
+            {searchRes.slice(0, 100).map((r: any) => (
+              <TokenList
+                key={r.id}
+                onClick={() => {
+                  onAdd(r.id);
+                  setSearch("");
+                  
+                  setOpen(false);
+                }}
+              >
+                <img
+                  src={`https://s2.coinmarketcap.com/static/img/coins/64x64/${r.id}.png`}
+                  alt={r.id}
+                />
+                {r.name}
+              </TokenList>
+            ))}
+          </Result>
+        ) : null}
+      </Modal>
+    </>
   );
 };
 
