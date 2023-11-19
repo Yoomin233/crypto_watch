@@ -35,7 +35,7 @@ const AddBtn = styled.div`
   padding: 4px;
 
   &:hover {
-    filter: brightness(1.1);
+    filter: brightness(0.95);
   }
 `;
 
@@ -94,7 +94,7 @@ const AddToken = ({ onAdd, mapData }: any) => {
                 onClick={() => {
                   onAdd(r.id);
                   setSearch("");
-                  
+
                   setOpen(false);
                 }}
               >

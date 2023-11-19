@@ -151,7 +151,6 @@ export const ChartsWrapper = styled.div`
       &.selected {
         /* color: yellow; */
         border-color: #1fe230;
-        top: transparent;
       }
     }
   }
